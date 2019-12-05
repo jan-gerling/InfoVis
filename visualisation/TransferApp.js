@@ -18,8 +18,16 @@ function drawClubBarchartPlayers() {
     return x.from.name === "Man Utd";
   }
   data = data.filter(checkClub);
-  data = data.filter((v,i) => data.indexOf(v) === i);
-  console.log(data);
+  var seenTransfers = {};
+  data = data.filter(function(currentObject) {
+    if (currentObject.player.name in seenTransfers) {
+        return false;
+    } else {
+        seenTransfers[currentObject.player.name] = true;
+        return true;
+    }
+  });
+
   var x = d3.scaleBand().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
   x.domain(data.map(function(d) { return d.player.name; }));
@@ -65,11 +73,117 @@ function getPlayerValue(val) {
 }
 
 function drawClubBarchartLeagues() {
-  console.log("TODO barchart Club-League");
+  var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
+  function checkClub(x) {
+    return x.from.name === "Man Utd";
+  }
+  data = data.filter(checkClub);
+  var seenTransfers = {};
+
+  data = data.filter(function(currentObject) {
+    if (currentObject.player.name in seenTransfers) {
+        return false;
+    } else {
+        seenTransfers[currentObject.player.name] = true;
+        return true;
+    }
+  });
+
+  var leagueData = {};
+  data.forEach(function (val) {
+    if (val.to.league in leagueData) {
+      leagueData[val.to.league].amount += 1;
+      leagueData[val.to.league].value += getPlayerValue(val.transfer.value);
+      leagueData[val.to.league].transfers.push(val);
+    } else {
+      leagueData[val.to.league] = {name: val.to.league, amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]};
+    }
+  });
+  var data = Object.values(leagueData);
+
+  var x = d3.scaleBand().range([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  x.domain(data.map(function(d) { return d.name; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  var xAxis = d3.axisBottom()
+      .scale(x);
+
+  var yAxis = d3.axisLeft()
+      .scale(y);
+
+  svg.append("g")
+    .call(yAxis);
+  svg.append("g")
+    .call(xAxis)
+    .attr("transform", "translate(0, " + height + ")");
+
+  var bars = svg.selectAll("bar")
+    .data(data);
+  bars.enter().append("rect")
+    .attr("fill", "steelblue")
+    .attr("x", function(d) { return x(d.name); })
+    .attr("width", x.bandwidth())
+    .attr("y", function(d) { return y(d.value); })
+    .attr("height", function(d) { return height - y(d.value); });
 }
 
 function drawClubBarchartClub() {
-  console.log("TODO barchart Club-Club");
+  var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
+  function checkClub(x) {
+    return x.from.name === "Man Utd";
+  }
+  data = data.filter(checkClub);
+  var seenTransfers = {};
+
+  data = data.filter(function(currentObject) {
+    if (currentObject.player.name in seenTransfers) {
+        return false;
+    } else {
+        seenTransfers[currentObject.player.name] = true;
+        return true;
+    }
+  });
+
+  var clubData = {};
+  data.forEach(function (val) {
+    if (val.to.league in clubData) {
+      clubData[val.to.name].amount += 1;
+      clubData[val.to.name].value += getPlayerValue(val.transfer.value);
+      clubData[val.to.name].transfers.push(val);
+    } else {
+      clubData[val.to.name] = {name: val.to.name, amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]};
+    }
+  });
+  var data = Object.values(clubData);
+
+  var x = d3.scaleBand().range([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  x.domain(data.map(function(d) { return d.name; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  var xAxis = d3.axisBottom()
+      .scale(x);
+
+  var yAxis = d3.axisLeft()
+      .scale(y);
+
+  svg.append("g")
+    .call(yAxis);
+  svg.append("g")
+    .call(xAxis)
+    .attr("transform", "translate(0, " + height + ")");
+
+  var bars = svg.selectAll("bar")
+    .data(data);
+  bars.enter().append("rect")
+    .attr("fill", "steelblue")
+    .attr("x", function(d) { return x(d.name); })
+    .attr("width", x.bandwidth())
+    .attr("y", function(d) { return y(d.value); })
+    .attr("height", function(d) { return height - y(d.value); });
 }
 
 function resize() {
@@ -81,4 +195,4 @@ function resize() {
   drawClubBarchartPlayers();
 }
 
-drawClubBarchartPlayers();
+drawClubBarchartClub();
