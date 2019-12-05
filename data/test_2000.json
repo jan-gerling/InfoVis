@@ -1,0 +1,191 @@
+[
+{
+    "club": {
+        "href": "/petaling-jaya-rangers/startseite/verein/58041/saison_id/2019",
+        "club_name": "Petaling Jaya Rangers",
+        "club_image": "https://tmssl.akamaized.net//images/wappen/head/58041.png?lm=1505836151",
+        "club_value": "\u00a3270",
+        "club_league": "UNK",
+        "club_leagueHref": "UNK",
+        "club_league_image": "UNK",
+        "season_transfers": {
+            "Departures": [],
+            "Arrivals": []
+        }
+    }
+},
+{
+    "club": {
+        "href": "/1-sc-sollenau/startseite/verein/8086/saison_id/2019",
+        "club_name": "1. SC Sollenau",
+        "club_image": "https://tmssl.akamaized.net//images/wappen/head/8086.png?lm=1500992584",
+        "club_value": "UNK",
+        "club_league": "UNK",
+        "club_leagueHref": "UNK",
+        "club_league_image": "UNK",
+        "season_transfers": {
+            "Departures": [
+                {
+                    "player_name": "Ladislav Libusa",
+                    "player_href": "/ladislav-libusa/profil/spieler/445438",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "30",
+                    "player_nationality": "Slovakia",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/154.png?lm=1520611569",
+                    "to_club_name": "Casino Baden",
+                    "to_club_href": "/casino-baden-ac/transfers/verein/22059/saison_id/2000",
+                    "to_club_league": "Casino Baden",
+                    "to_club_league_href": "/casino-baden-ac/transfers/verein/22059/saison_id/2000",
+                    "transfer_fee": "?",
+                    "transfer_href": "/jumplist/transfers/spieler/445438/transfer_id/1734762"
+                },
+                {
+                    "player_name": "Anton Reisner",
+                    "player_href": "/anton-reisner/profil/spieler/711545",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "38",
+                    "player_nationality": "Austria",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/127.png?lm=1520611569",
+                    "to_club_name": "Neufeld",
+                    "to_club_href": "/asv-neufeld/transfers/verein/24489/saison_id/2000",
+                    "to_club_league": "Neufeld",
+                    "to_club_league_href": "/asv-neufeld/transfers/verein/24489/saison_id/2000",
+                    "transfer_fee": "?",
+                    "transfer_href": "/jumplist/transfers/spieler/711545/transfer_id/2666400"
+                },
+                {
+                    "player_name": "Roman Waldherr",
+                    "player_href": "/roman-waldherr/profil/spieler/523058",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "34",
+                    "player_nationality": "Austria",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/127.png?lm=1520611569",
+                    "to_club_name": "Neud\u00f6rfl",
+                    "to_club_href": "/sc-neudorfl/transfers/verein/12269/saison_id/2000",
+                    "to_club_league": "Neud\u00f6rfl",
+                    "to_club_league_href": "/sc-neudorfl/transfers/verein/12269/saison_id/2000",
+                    "transfer_fee": "?",
+                    "transfer_href": "/jumplist/transfers/spieler/523058/transfer_id/2516564"
+                }
+            ],
+            "Arrivals": [
+                {
+                    "player_name": "Ladislav Libusa",
+                    "player_href": "/ladislav-libusa/profil/spieler/445438",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "30",
+                    "player_nationality": "Slovakia",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/154.png?lm=1520611569",
+                    "from_club_name": "Casino Baden",
+                    "from_club_href": "/casino-baden-ac/transfers/verein/22059/saison_id/2000",
+                    "from_club_league": "Casino Baden",
+                    "from_club_league_href": "/casino-baden-ac/transfers/verein/22059/saison_id/2000",
+                    "transfer_fee": "?",
+                    "transfer_href": "/jumplist/transfers/spieler/445438/transfer_id/1734762"
+                },
+                {
+                    "player_name": "Anton Reisner",
+                    "player_href": "/anton-reisner/profil/spieler/711545",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "38",
+                    "player_nationality": "Austria",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/127.png?lm=1520611569",
+                    "from_club_name": "Neufeld",
+                    "from_club_href": "/asv-neufeld/transfers/verein/24489/saison_id/2000",
+                    "from_club_league": "Neufeld",
+                    "from_club_league_href": "/asv-neufeld/transfers/verein/24489/saison_id/2000",
+                    "transfer_fee": "?",
+                    "transfer_href": "/jumplist/transfers/spieler/711545/transfer_id/2666400"
+                },
+                {
+                    "player_name": "Roman Waldherr",
+                    "player_href": "/roman-waldherr/profil/spieler/523058",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "34",
+                    "player_nationality": "Austria",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/127.png?lm=1520611569",
+                    "from_club_name": "Neud\u00f6rfl",
+                    "from_club_href": "/sc-neudorfl/transfers/verein/12269/saison_id/2000",
+                    "from_club_league": "Neud\u00f6rfl",
+                    "from_club_league_href": "/sc-neudorfl/transfers/verein/12269/saison_id/2000",
+                    "transfer_fee": "?",
+                    "transfer_href": "/jumplist/transfers/spieler/523058/transfer_id/2516564"
+                }
+            ]
+        }
+    }
+},
+{
+    "club": {
+        "href": "/frankfurter-fc-viktoria-91/startseite/verein/706/saison_id/2019",
+        "club_name": "1.FC Frankfurt (Oder)",
+        "club_image": "https://tmssl.akamaized.net//images/wappen/head/706.png?lm=1427581323",
+        "club_value": "UNK",
+        "club_league": "Brandenburgliga",
+        "club_leagueHref": "/brandenburgliga/startseite/wettbewerb/BRBL",
+        "club_league_image": "https://tmssl.akamaized.net//images/logo/mediumquad/brbl.png?lm=1427210412",
+        "season_transfers": {
+            "Departures": [
+                {
+                    "player_name": "Ronald Richter",
+                    "player_href": "/ronald-richter/profil/spieler/11949",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "17",
+                    "player_nationality": "Germany",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/40.png?lm=1520612525",
+                    "to_club_name": "Frankfurt/O U19",
+                    "to_club_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "to_club_league": "Frankfurt/O U19",
+                    "to_club_league_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "transfer_fee": "-",
+                    "transfer_href": "/jumplist/transfers/spieler/11949/transfer_id/26045"
+                },
+                {
+                    "player_name": "Andr\u00e9 Biem\u00fcller",
+                    "player_href": "/andre-biemuller/profil/spieler/11906",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "17",
+                    "player_nationality": "Germany",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/40.png?lm=1520612525",
+                    "to_club_name": "Frankfurt/O U19",
+                    "to_club_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "to_club_league": "Frankfurt/O U19",
+                    "to_club_league_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "transfer_fee": "-",
+                    "transfer_href": "/jumplist/transfers/spieler/11906/transfer_id/26000"
+                }
+            ],
+            "Arrivals": [
+                {
+                    "player_name": "Ronald Richter",
+                    "player_href": "/ronald-richter/profil/spieler/11949",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "17",
+                    "player_nationality": "Germany",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/40.png?lm=1520612525",
+                    "from_club_name": "Frankfurt/O U19",
+                    "from_club_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "from_club_league": "Frankfurt/O U19",
+                    "from_club_league_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "transfer_fee": "-",
+                    "transfer_href": "/jumplist/transfers/spieler/11949/transfer_id/26045"
+                },
+                {
+                    "player_name": "Andr\u00e9 Biem\u00fcller",
+                    "player_href": "/andre-biemuller/profil/spieler/11906",
+                    "player_image": "https://tmssl.akamaized.net//images/portrait/small/default.jpg?lm=1455618221",
+                    "player_age": "17",
+                    "player_nationality": "Germany",
+                    "player_nationality image": "https://tmssl.akamaized.net//images/flagge/verysmall/40.png?lm=1520612525",
+                    "from_club_name": "Frankfurt/O U19",
+                    "from_club_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "from_club_league": "Frankfurt/O U19",
+                    "from_club_league_href": "/frankfurter-fc-viktoria-91-u19/transfers/verein/36814/saison_id/2000",
+                    "transfer_fee": "-",
+                    "transfer_href": "/jumplist/transfers/spieler/11906/transfer_id/26000"
+                }
+            ]
+        }
+    }
+}
+]
