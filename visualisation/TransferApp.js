@@ -53,10 +53,28 @@ function drawClubBarchartPlayers() {
     .attr("width", x.bandwidth())
     .attr("y", function(d) { return y(getPlayerValue(d.transfer.value)); })
     .attr("height", function(d) { return height - y(getPlayerValue(d.transfer.value)); })
-    .on("mouseover", handleMouseOver);
+    .on("mouseenter", handleMouseEnter)
+    .on("mouseleave", handleMouseLeave)
+    .on("mousemove", handleMouseMove);
 }
 
-function handleMouseOver(transfer) {
+function handleMouseEnter(transfer) {
+  var tiny = document.getElementById("tinyWindow");
+  var tinyName = document.getElementById("tinyWindow_name");
+  var tinyAge = document.getElementById("tinyWindow_age");
+  var tinyImage = document.getElementById("tinyImage"); 
+  tinyImage.src = transfer.player.image;
+  tinyName.innerHTML = transfer.player.name;
+  tinyAge.innerHTML = transfer.player.age;
+  tiny.style.display = "block";
+}
+
+function handleMouseLeave() {
+  var tiny = document.getElementById("tinyWindow");
+  tiny.style.display = "none";
+}
+
+function handleMouseMove() {
   var tiny = document.getElementById("tinyWindow");
   var e = window.event;
   var x = e.clientX,

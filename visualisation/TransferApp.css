@@ -31,8 +31,16 @@ select {
 
 #tinyWindow {
   position: absolute;
-  height: 100px;
-  width: 100px;
-  background-color: blue;
+  width: 150px;
+  background-color: lightgray;
   display: none;
+}
+
+#tinyWindow p {
+  font-size: medium;
+}
+
+#tinyImage {
+  height: 150px;
+  width: 150px;
 }
