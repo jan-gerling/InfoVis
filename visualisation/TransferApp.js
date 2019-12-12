@@ -13,52 +13,6 @@ var svg = d3.select("svg")
 
 drawClubBarchartClub(svg, width, height, {club: "Man Utd"});
 
-function drawClubBarchartPlayers(svg, width, height, options) {
-  var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
-  function checkClub(x) {
-    return x.from.name === options.club || x.to.name == options.club;
-  }
-  data = data.filter(checkClub);
-  var seenTransfers = {};
-  data = data.filter(function(currentObject) {
-    if (currentObject.player.name in seenTransfers) {
-        return false;
-    } else {
-        seenTransfers[currentObject.player.name] = true;
-        return true;
-    }
-  });
-
-  var x = d3.scaleBand().range([0, width]);
-  var y = d3.scaleLinear().range([height, 0]);
-  x.domain(data.map(function(d) { return d.player.name; }));
-  y.domain([0, d3.max(data, function(d) { return getPlayerValue(d.transfer.value); })]);
-
-  var xAxis = d3.axisBottom()
-      .scale(x);
-
-  var yAxis = d3.axisLeft()
-      .scale(y);
-
-  svg.append("g")
-    .call(yAxis);
-  svg.append("g")
-    .call(xAxis)
-    .attr("transform", "translate(0, " + height + ")");
-
-  var bars = svg.selectAll("bar")
-    .data(data);
-  bars.enter().append("rect")
-    .attr("fill", function(d) {return d.from.name == options.club ? "steelblue" : "red"})
-    .attr("x", function(d) { return x(d.player.name); })
-    .attr("width", x.bandwidth())
-    .attr("y", function(d) { return y(getPlayerValue(d.transfer.value)); })
-    .attr("height", function(d) { return height - y(getPlayerValue(d.transfer.value)); })
-    .on("mouseenter", handleMouseEnter)
-    .on("mouseleave", handleMouseLeave)
-    .on("mousemove", handleMouseMove);
-}
-
 function handleMouseEnter(transfer) {
   var tiny = document.getElementById("tinyWindow");
   var tinyName = document.getElementById("tinyWindow_name");
@@ -159,14 +113,14 @@ function drawClubBarchartLeagues(svg, width, height) {
 }
 
 function drawClubBarchartClub(svg, width, height, options) {
-  var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
+  var ogdata = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
   function checkClub(x) {
     return x.from.name === options.club || x.to.name === options.club;
   }
-  data = data.filter(checkClub);
+  ogdata = ogdata.filter(checkClub);
   var seenTransfers = {};
 
-  data = data.filter(function(currentObject) {
+  ogdata = ogdata.filter(function(currentObject) {
     if (currentObject.player.name in seenTransfers) {
         return false;
     } else {
@@ -176,7 +130,7 @@ function drawClubBarchartClub(svg, width, height, options) {
   });
 
   var clubData = {};
-  data.forEach(function (val) {
+  ogdata.forEach(function (val) {
     if (val.from.name === options.club) {
       if (val.to.name in clubData) {
         clubData[val.to.name].to.amount += 1;
@@ -196,13 +150,26 @@ function drawClubBarchartClub(svg, width, height, options) {
     }
   });
   var data = Object.values(clubData);
-  console.log(clubData);
+  data.sort(function(e1, e2) {
+    return e2.from.value + e2.to.value - (e1.from.value + e1.to.value);
+  });
+  var sortedData = [];
+  data.forEach(function (val) {
+    val.from.transfers.forEach(function (t) {
+      sortedData.push(t);
+    });
+    val.to.transfers.forEach(function (t) {
+      sortedData.push(t);
+    });
+  });
+
 
   var x = d3.scaleBand().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
 
   x.domain(data.map(function(d) { return d.name; }));
   y.domain([0, d3.max(data, function(d) { return d.from.value > d.to.value ? d.from.value : d.to.value; })]);
+  // y.domain([0, d3.max(data, function(d) { return d.from.amount > d.to.amount ? d.from.amount : d.to.amount; })]);
 
   var xAxis = d3.axisBottom()
       .scale(x);
@@ -216,18 +183,43 @@ function drawClubBarchartClub(svg, width, height, options) {
     .call(xAxis)
     .attr("transform", "translate(0, " + height + ")");
 
+  var heightCounter = {};
+  for (var i = 0; i < ogdata.length; i++) {
+    var f = ogdata[i].to.name === options.club;
+    var name = f ? ogdata[i].from.name : ogdata[i].to.name;
+    heightCounter[name] = {};
+    heightCounter[name].to = 0;
+    heightCounter[name].from = 0;
+  }
   var bars = svg.selectAll("bar")
-    .data(data).enter();
+    .data(sortedData).enter();
   bars.append("rect")
-    .attr("fill", "steelblue")
-    .attr("x", function(d) { return x(d.name); })
+    .attr("fill", function(d) { return d.to.name === options.club ? "steelblue" : "red"; })
+    .attr("x", function(d) { return d.from.name === options.club ? x(d.to.name) + x.bandwidth() / 2 : x(d.from.name); })
     .attr("width", x.bandwidth()/2)
-    .attr("y", function(d) { return y(d.to.value); })
-    .attr("height", function(d) { return height - y(d.to.value); });
-  bars.insert("rect")
-    .attr("fill", "red")
-    .attr("x", function(d) { return x(d.name) + (x.bandwidth()/2); })
-    .attr("width", x.bandwidth() / 2)
-    .attr("y", function(d) { return y(d.from.value); })
-    .attr("height", function(d) { return height - y(d.from.value); });
+    .attr("y", function(d) {
+      var f = d.to.name === options.club;
+      var res = f ? y(getPlayerValue(d.transfer.value)) - heightCounter[d.from.name].to : y(getPlayerValue(d.transfer.value)) - heightCounter[d.to.name].from;
+      if (!f) {
+        heightCounter[d.to.name].from += height - y(getPlayerValue(d.transfer.value));
+      } else {
+        heightCounter[d.from.name].to += height - y(getPlayerValue(d.transfer.value));
+      }
+      return res;
+    })
+    // .attr("y", function(d) {
+    //   var f = d.to.name === options.club;
+    //   var res = f ? y(1) - heightCounter[d.from.name].to : y(1) - heightCounter[d.to.name].from;
+    //   if (!f) {
+    //     heightCounter[d.to.name].from += height - y(1);
+    //   } else {
+    //     heightCounter[d.from.name].to += height - y(1);
+    //   }
+    //   return res;
+    // })
+    // .attr("height", function(d) {return height - y(1); })
+    .attr("height", function(d) {return height - y(getPlayerValue(d.transfer.value)); })
+    .on("mouseenter", handleMouseEnter)
+    .on("mouseleave", handleMouseLeave)
+    .on("mousemove", handleMouseMove);
 }
