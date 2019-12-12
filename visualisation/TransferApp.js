@@ -1,6 +1,5 @@
 var viewWidth = window.innerWidth;
 var viewHeight = window.innerHeight;
-d3.select(window).on("resize", resize);
 
 var margin = {top: 20, right: 20, bottom: 30, left: 80};
 var width = viewWidth - margin.left - margin.right;
@@ -12,10 +11,12 @@ var svg = d3.select("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-function drawClubBarchartPlayers() {
+drawClubBarchartClub(svg, width, height, {club: "Man Utd"});
+
+function drawClubBarchartPlayers(svg, width, height, options) {
   var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
   function checkClub(x) {
-    return x.from.name === "Man Utd";
+    return x.from.name === options.club || x.to.name == options.club;
   }
   data = data.filter(checkClub);
   var seenTransfers = {};
@@ -48,7 +49,7 @@ function drawClubBarchartPlayers() {
   var bars = svg.selectAll("bar")
     .data(data);
   bars.enter().append("rect")
-    .attr("fill", "steelblue")
+    .attr("fill", function(d) {return d.from.name == options.club ? "steelblue" : "red"})
     .attr("x", function(d) { return x(d.player.name); })
     .attr("width", x.bandwidth())
     .attr("y", function(d) { return y(getPlayerValue(d.transfer.value)); })
@@ -62,7 +63,7 @@ function handleMouseEnter(transfer) {
   var tiny = document.getElementById("tinyWindow");
   var tinyName = document.getElementById("tinyWindow_name");
   var tinyAge = document.getElementById("tinyWindow_age");
-  var tinyImage = document.getElementById("tinyImage"); 
+  var tinyImage = document.getElementById("tinyImage");
   tinyImage.src = transfer.player.image;
   tinyName.innerHTML = transfer.player.name;
   tinyAge.innerHTML = transfer.player.age;
@@ -100,7 +101,7 @@ function getPlayerValue(val) {
   return res;
 }
 
-function drawClubBarchartLeagues() {
+function drawClubBarchartLeagues(svg, width, height) {
   var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
   function checkClub(x) {
     return x.from.name === "Man Utd";
@@ -157,10 +158,10 @@ function drawClubBarchartLeagues() {
     .attr("height", function(d) { return height - y(d.value); });
 }
 
-function drawClubBarchartClub() {
+function drawClubBarchartClub(svg, width, height, options) {
   var data = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
   function checkClub(x) {
-    return x.from.name === "Man Utd";
+    return x.from.name === options.club || x.to.name === options.club;
   }
   data = data.filter(checkClub);
   var seenTransfers = {};
@@ -176,21 +177,32 @@ function drawClubBarchartClub() {
 
   var clubData = {};
   data.forEach(function (val) {
-    if (val.to.league in clubData) {
-      clubData[val.to.name].amount += 1;
-      clubData[val.to.name].value += getPlayerValue(val.transfer.value);
-      clubData[val.to.name].transfers.push(val);
+    if (val.from.name === options.club) {
+      if (val.to.name in clubData) {
+        clubData[val.to.name].to.amount += 1;
+        clubData[val.to.name].to.value += getPlayerValue(val.transfer.value);
+        clubData[val.to.name].to.transfers.push(val);
+      } else {
+        clubData[val.to.name] = {name: val.to.name, to: {amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
+      }
     } else {
-      clubData[val.to.name] = {name: val.to.name, amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]};
+      if (val.from.name in clubData) {
+        clubData[val.from.name].from.amount += 1;
+        clubData[val.from.name].from.value += getPlayerValue(val.transfer.value);
+        clubData[val.from.name].from.transfers.push(val);
+      } else {
+        clubData[val.from.name] = {name: val.from.name, from: {amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
+      }
     }
   });
   var data = Object.values(clubData);
+  console.log(clubData);
 
   var x = d3.scaleBand().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
 
   x.domain(data.map(function(d) { return d.name; }));
-  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+  y.domain([0, d3.max(data, function(d) { return d.from.value > d.to.value ? d.from.value : d.to.value; })]);
 
   var xAxis = d3.axisBottom()
       .scale(x);
@@ -205,22 +217,17 @@ function drawClubBarchartClub() {
     .attr("transform", "translate(0, " + height + ")");
 
   var bars = svg.selectAll("bar")
-    .data(data);
-  bars.enter().append("rect")
+    .data(data).enter();
+  bars.append("rect")
     .attr("fill", "steelblue")
     .attr("x", function(d) { return x(d.name); })
-    .attr("width", x.bandwidth())
-    .attr("y", function(d) { return y(d.value); })
-    .attr("height", function(d) { return height - y(d.value); });
+    .attr("width", x.bandwidth()/2)
+    .attr("y", function(d) { return y(d.to.value); })
+    .attr("height", function(d) { return height - y(d.to.value); });
+  bars.insert("rect")
+    .attr("fill", "red")
+    .attr("x", function(d) { return x(d.name) + (x.bandwidth()/2); })
+    .attr("width", x.bandwidth() / 2)
+    .attr("y", function(d) { return y(d.from.value); })
+    .attr("height", function(d) { return height - y(d.from.value); });
 }
-
-function resize() {
-  //This function is called if the window is resized
-  //You can update your scatterplot here
-  viewWidth = window.innerWidth;
-  viewHeight = window.innerHeight;
-  var svg = d3.select("svg").selectAll("*").remove();
-  drawClubBarchartPlayers();
-}
-
-drawClubBarchartPlayers();
