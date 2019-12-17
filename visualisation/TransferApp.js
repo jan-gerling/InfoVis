@@ -11,7 +11,10 @@ var svg = d3.select("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-drawClubBarchartClub(svg, width, height, {club: "Man Utd"});
+load_data(2000, 2002, function() {
+  console.log("Data ready for chart");
+  drawClubBarchartClub(svg, width, height, {club: "Man Utd"});
+});
 
 function handleMouseEnter(transfer) {
   var tiny = document.getElementById("tinyWindow");
@@ -58,7 +61,9 @@ function getPlayerValue(val) {
 }
 
 function drawClubBarchartClub(svg, width, height, options) {
-  var ogdata = transfer_data["2004-2005"].concat(transfer_data["2003-2004"]).concat(transfer_data["2005-2006"]);
+  var ogdata = transfer_data_old["2004-2005"].concat(transfer_data_old["2003-2004"]).concat(transfer_data_old["2005-2006"]);
+  var manchester = get_club("Nueva Chicago");
+  console.log(manchester);
   function checkClub(x) {
     return x.from.name === options.club || x.to.name === options.club;
   }
