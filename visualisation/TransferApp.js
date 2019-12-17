@@ -11,9 +11,9 @@ var svg = d3.select("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-load_data(2000, 2002, function() {
+load_data(2000, 2019, function() {
   console.log("Data ready for chart");
-  drawClubBarchartClub(svg, width, height, {club: "Man Utd"});
+  drawClubBarchartClub(svg, width, height, {club: "Everton FC"});
 });
 
 function handleMouseEnter(transfer) {
@@ -22,10 +22,10 @@ function handleMouseEnter(transfer) {
   var tinyAge = document.getElementById("tinyWindow_age");
   var tinyAmount = document.getElementById("tinyWindow_value");
   var tinyImage = document.getElementById("tinyImage");
-  tinyImage.src = transfer.player.image;
-  tinyName.innerHTML = transfer.player.name;
-  tinyAge.innerHTML = transfer.player.age;
-  tinyAmount.innerHTML = transfer.transfer.value;
+  tinyImage.src = transfer.player_image;
+  tinyName.innerHTML = transfer.player_name;
+  tinyAge.innerHTML = transfer.player_age;
+  tinyAmount.innerHTML = transfer.transfer_fee;
   tiny.style.display = "block";
 }
 
@@ -44,7 +44,7 @@ function handleMouseMove() {
 }
 
 function getPlayerValue(val) {
-  var re = /-|\?|Free transfer|draft/g;
+  var re = /-|\?|Free transfer|draft|Loan|End of loan/g;
   var res;
   if (val === "" || re.exec(val)) {
     res =  0;
@@ -62,43 +62,37 @@ function getPlayerValue(val) {
 
 function drawClubBarchartClub(svg, width, height, options) {
   var ogdata = transfer_data_old["2004-2005"].concat(transfer_data_old["2003-2004"]).concat(transfer_data_old["2005-2006"]);
-  var manchester = get_club("Nueva Chicago");
-  console.log(manchester);
-  function checkClub(x) {
-    return x.from.name === options.club || x.to.name === options.club;
+  var new_data = get_club(options.club);
+  console.log(new_data);
+  var arrivals = [];
+  var departures = [];
+  for (var season in new_data) {
+    arrivals = arrivals.concat(new_data[season].season_transfers.Arrivals);
+    departures = departures.concat(new_data[season].season_transfers.Departures);
   }
-  ogdata = ogdata.filter(checkClub);
-  var seenTransfers = {};
-
-  ogdata = ogdata.filter(function(currentObject) {
-    if (currentObject.player.name in seenTransfers) {
-        return false;
-    } else {
-        seenTransfers[currentObject.player.name] = true;
-        return true;
-    }
-  });
-
+  var all_transfers = arrivals.concat(departures);
+  console.log(all_transfers);
   var clubData = {};
-  ogdata.forEach(function (val) {
-    if (val.from.name === options.club) {
-      if (val.to.name in clubData) {
-        clubData[val.to.name].to.amount += 1;
-        clubData[val.to.name].to.value += getPlayerValue(val.transfer.value);
-        clubData[val.to.name].to.transfers.push(val);
+  all_transfers.forEach(function (val) {
+    if (val.to_club_name !== undefined) {
+      if (val.to_club_name in clubData) {
+        clubData[val.to_club_name].to.amount += 1;
+        clubData[val.to_club_name].to.value += getPlayerValue(val.transfer_fee);
+        clubData[val.to_club_name].to.transfers.push(val);
       } else {
-        clubData[val.to.name] = {name: val.to.name, to: {amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
+        clubData[val.to_club_name] = {name: val.to_club_name, to: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
       }
     } else {
-      if (val.from.name in clubData) {
-        clubData[val.from.name].from.amount += 1;
-        clubData[val.from.name].from.value += getPlayerValue(val.transfer.value);
-        clubData[val.from.name].from.transfers.push(val);
+      if (val.from_club_name in clubData) {
+        clubData[val.from_club_name].from.amount += 1;
+        clubData[val.from_club_name].from.value += getPlayerValue(val.transfer_fee);
+        clubData[val.from_club_name].from.transfers.push(val);
       } else {
-        clubData[val.from.name] = {name: val.from.name, from: {amount: 1, value: getPlayerValue(val.transfer.value), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
+        clubData[val.from_club_name] = {name: val.from_club_name, from: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
       }
     }
   });
+  console.log(clubData);
   var data = Object.values(clubData);
   data.sort(function(e1, e2) {
     return e2.from.value + e2.to.value - (e1.from.value + e1.to.value);
@@ -135,44 +129,45 @@ function drawClubBarchartClub(svg, width, height, options) {
 
   var seperatorHeights = [];
   var heightCounter = {};
-  for (var i = 0; i < ogdata.length; i++) {
-    var f = ogdata[i].to.name === options.club;
-    var name = f ? ogdata[i].from.name : ogdata[i].to.name;
+  for (var i = 0; i < all_transfers.length; i++) {
+    var f = all_transfers[i].to_club_name === undefined;
+    var name = f ? all_transfers[i].from_club_name : all_transfers[i].to_club_name;
     heightCounter[name] = {};
     heightCounter[name].to = 0;
     heightCounter[name].from = 0;
   }
+  console.log(sortedData);
   var bars = svg.selectAll("bar")
     .data(sortedData).enter();
   bars.append("rect")
     // Categorical colors found on https://vega.github.io/vega/docs/schemes/#categorical
-    .attr("fill", function(d) { return d.to.name === options.club ? "#1f77b4" : "#ff7f0e"; })
-    .attr("x", function(d) { return d.from.name === options.club ? x(d.to.name) + x.bandwidth() / 2 : x(d.from.name); })
+    .attr("fill", function(d) { return d.to_club_name === undefined ? "#1f77b4" : "#ff7f0e"; })
+    .attr("x", function(d) { return d.from_club_name === undefined ? x(d.to_club_name) + x.bandwidth() / 2 : x(d.from_club_name); })
     .attr("width", x.bandwidth()/2)
     .attr("y", function(d) {
-      var xSep = d.from.name === options.club ? x(d.to.name) + x.bandwidth() / 2 : x(d.from.name);
-      var f = d.to.name === options.club;
-      var res = f ? y(getPlayerValue(d.transfer.value)) - heightCounter[d.from.name].to : y(getPlayerValue(d.transfer.value)) - heightCounter[d.to.name].from;
+      var xSep = d.from_club_name === undefined ? x(d.to_club_name) + x.bandwidth() / 2 : x(d.from_club_name);
+      var f = d.to_club_name === undefined;
+      var res = f ? y(getPlayerValue(d.transfer_fee)) - heightCounter[d.from_club_name].to : y(getPlayerValue(d.transfer_fee)) - heightCounter[d.to_club_name].from;
       if (!f) {
-        heightCounter[d.to.name].from += height - y(getPlayerValue(d.transfer.value));
+        heightCounter[d.to_club_name].from += height - y(getPlayerValue(d.transfer_fee));
       } else {
-        heightCounter[d.from.name].to += height - y(getPlayerValue(d.transfer.value));
+        heightCounter[d.from_club_name].to += height - y(getPlayerValue(d.transfer_fee));
       }
       seperatorHeights.push([xSep, res]);
       return res;
     })
     // .attr("y", function(d) {
-    //   var f = d.to.name === options.club;
-    //   var res = f ? y(1) - heightCounter[d.from.name].to : y(1) - heightCounter[d.to.name].from;
+    //   var f = d.to_club_name === options.club;
+    //   var res = f ? y(1) - heightCounter[d.from_club_name].to : y(1) - heightCounter[d.to_club_name].from;
     //   if (!f) {
-    //     heightCounter[d.to.name].from += height - y(1);
+    //     heightCounter[d.to_club_name].from += height - y(1);
     //   } else {
-    //     heightCounter[d.from.name].to += height - y(1);
+    //     heightCounter[d.from_club_name].to += height - y(1);
     //   }
     //   return res;
     // })
     // .attr("height", function(d) {return height - y(1); })
-    .attr("height", function(d) {return height - y(getPlayerValue(d.transfer.value)); })
+    .attr("height", function(d) {return height - y(getPlayerValue(d.transfer_fee)); })
     .on("mouseenter", handleMouseEnter)
     .on("mouseleave", handleMouseLeave)
     .on("mousemove", handleMouseMove);
