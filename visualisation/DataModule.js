@@ -13,7 +13,6 @@ async function load_data(start_year, end_year, _callback){
         await jQuery.getJSON(data_path.concat(year).concat(".json"), function(json) {
             data[year] = json;
             counter++;
-            console.log(data[year]);
         });
     }
     transfer_data = data;
@@ -50,7 +49,6 @@ function get_league(league){
             }
         }
         filtered_data[year] = clubs;
-        console.log(filtered_data[year]);
     }
 
     return filtered_data
