@@ -6,7 +6,6 @@ var width = viewWidth - margin.left - margin.right;
 var height = viewHeight - margin.top - margin.bottom;
 
 //TODO: allow league on x-axis
-//      order bars per club
 //      lines in background
 var svg = d3.select("svg")
     .attr("width", width)
@@ -16,7 +15,7 @@ var svg = d3.select("svg")
 
 load_data(2000, 2019, function() {
   console.log("Data ready for chart");
-  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "amount", sortBy: "combined"});
+  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", sortBy: "combined"});
 });
 
 function drawClubBarchartClub(svg, width, height, options) {
@@ -28,7 +27,8 @@ function drawClubBarchartClub(svg, width, height, options) {
     departures = departures.concat(new_data[season].season_transfers.Departures);
   }
   var all_transfers = arrivals.concat(departures);
-  console.log(all_transfers);
+
+  // Aggregate the data per club
   var clubData = {};
   all_transfers.forEach(function (val) {
     if (val.to_club_name !== undefined) {
@@ -49,11 +49,21 @@ function drawClubBarchartClub(svg, width, height, options) {
       }
     }
   });
+
+  // Sort the clubs by value or amount according to options
   var data = Object.values(clubData);
   data.sort(getSortFunction(options));
   data.splice(10);
+
+  // Put all the transfers sorted into a single list for d3
   var sortedData = [];
   data.forEach(function (val) {
+    val.from.transfers.sort(function (e1, e2) {
+      return getPlayerValue(e2.transfer_fee) - getPlayerValue(e1.transfer_fee);
+    });
+    val.to.transfers.sort(function (e1, e2) {
+      return getPlayerValue(e2.transfer_fee) - getPlayerValue(e1.transfer_fee);
+    });
     val.from.transfers.forEach(function (t) {
       sortedData.push(t);
     });
@@ -61,7 +71,6 @@ function drawClubBarchartClub(svg, width, height, options) {
       sortedData.push(t);
     });
   });
-
 
   var x = d3.scaleBand().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
@@ -81,7 +90,9 @@ function drawClubBarchartClub(svg, width, height, options) {
     .call(xAxis)
     .attr("transform", "translate(0, " + height + ")");
 
+  // Keeps track of where the seperator lines should come
   var seperatorHeights = [];
+  // Heightcounter remembers how high the next block of the same club should be placed
   var heightCounter = {};
   for (var i = 0; i < all_transfers.length; i++) {
     var f = all_transfers[i].to_club_name === undefined;
@@ -90,10 +101,10 @@ function drawClubBarchartClub(svg, width, height, options) {
     heightCounter[name].to = 0;
     heightCounter[name].from = 0;
   }
-  console.log(sortedData);
+
   var bars = svg.selectAll("bar")
-    .data(sortedData).enter();
-  bars.append("rect")
+    .data(sortedData).enter()
+    .append("rect")
     // Categorical colors found on https://vega.github.io/vega/docs/schemes/#categorical
     .attr("fill", function(d) { return d.to_club_name === undefined ? "#1f77b4" : "#ff7f0e"; })
     .attr("x", function(d) { return d.from_club_name === undefined ? x(d.to_club_name) + x.bandwidth() / 2 : x(d.from_club_name); })
