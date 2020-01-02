@@ -13,8 +13,8 @@ var svg = d3.select("svg")
 
 load_data(2000, 2019, function() {
   console.log("Data ready for chart");
-  //drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
-  drawLineChart(svg, width, height, "Everton FC");
+  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+  // drawLineChart(svg, width, height, "Everton FC");
 });
 
 function drawClubBarchartClub(svg, width, height, options) {
@@ -85,6 +85,33 @@ function drawClubBarchartClub(svg, width, height, options) {
   var yAxis = d3.axisLeft()
       .scale(y);
 
+  // gridlines in x axis function
+  function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(5)
+  }
+
+  // gridlines in y axis function
+  function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(5)
+  }
+
+  svg.append("g")			
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .call(make_x_gridlines()
+          .tickSize(-height)
+          .tickFormat("")
+      );
+
+  svg.append("g")			
+      .attr("class", "grid")
+      .call(make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      );
+
   svg.append("g")
     .call(yAxis);
   svg.append("g")
@@ -126,7 +153,6 @@ function drawClubBarchartClub(svg, width, height, options) {
 
 function drawLineChart(svg, width, height, club) {
   var new_data = get_club(club);
-  console.log(new_data);
   var arrivals = [];
   var departures = [];
   var data_vals = Object.values(new_data);
@@ -148,11 +174,37 @@ function drawLineChart(svg, width, height, club) {
   var x = d3.scaleBand().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
 
-  console.log(arrivals.map(function(d) { return d.season; }));
   x.domain(arrivals.map(function(d) { return d.season; }));
   var max_arrival = d3.max(arrivals, function(d) {return d.value;});
   var max_departures = d3.max(departures, function(d) {return d.value});
   y.domain([0, Math.max(max_arrival, max_departures)]);
+
+  // gridlines in x axis function
+  function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(5);
+  }
+
+  // gridlines in y axis function
+  function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10);
+  }
+
+  svg.append("g")			
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .call(make_x_gridlines()
+          .tickSize(-height)
+          .tickFormat("")
+      );
+
+  svg.append("g")			
+      .attr("class", "grid")
+      .call(make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      );
 
   var xAxis = d3.axisBottom()
       .scale(x);
