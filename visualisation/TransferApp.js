@@ -5,8 +5,6 @@ var margin = {top: 20, right: 20, bottom: 30, left: 80};
 var width = viewWidth - margin.left - margin.right;
 var height = viewHeight - margin.top - margin.bottom;
 
-//TODO: allow league on x-axis
-//      lines in background
 var svg = d3.select("svg")
     .attr("width", width)
     .attr("height", height + 500)
@@ -15,7 +13,8 @@ var svg = d3.select("svg")
 
 load_data(2000, 2019, function() {
   console.log("Data ready for chart");
-  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+  //drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+  drawLineChart(svg, width, height, "Everton FC");
 });
 
 function drawClubBarchartClub(svg, width, height, options) {
@@ -123,6 +122,63 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("y1", function(d){return d[1];})      // y position of the first end of the line
     .attr("x2", function(d){return d[0] + x.bandwidth() / 2;})     // x position of the second end of the line
     .attr("y2", function(d){return d[1];});    // y position of the second end of the line
+}
+
+function drawLineChart(svg, width, height, club) {
+  var new_data = get_club(club);
+  console.log(new_data);
+  var arrivals = [];
+  var departures = [];
+  var data_vals = Object.values(new_data);
+  var data_keys = Object.keys(new_data);
+
+  for (var i = 0; i < data_vals.length; i++) {
+    arrivals.push({season: data_keys[i], value: 0, amount: 0});
+    departures.push({season: data_keys[i], value: 0, amount: 0});
+    data_vals[i].season_transfers.Arrivals.forEach(function(v) {
+      arrivals[i].value += getPlayerValue(v.transfer_fee);
+      arrivals[i].amount += 1;
+    });
+    data_vals[i].season_transfers.Departures.forEach(function(v) {
+      departures[i].value += getPlayerValue(v.transfer_fee);
+      departures[i].amount += 1;
+    });
+  }
+  
+  var x = d3.scaleBand().range([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  console.log(arrivals.map(function(d) { return d.season; }));
+  x.domain(arrivals.map(function(d) { return d.season; }));
+  var max_arrival = d3.max(arrivals, function(d) {return d.value;});
+  var max_departures = d3.max(departures, function(d) {return d.value});
+  y.domain([0, Math.max(max_arrival, max_departures)]);
+
+  var xAxis = d3.axisBottom()
+      .scale(x);
+
+  var yAxis = d3.axisLeft()
+      .scale(y);
+
+  svg.append("g")
+    .call(yAxis);
+  svg.append("g")
+    .call(xAxis)
+    .attr("transform", "translate(0, " + height + ")");
+  
+  var line = d3.line()
+    .x(function(d) { return x(d.season) + 0.5 * x.bandwidth(); })
+    .y(function(d) { return y(d.value); })
+
+  svg.append("path")
+    .datum(arrivals)
+    .attr("d", line)
+    .attr("class", "line");
+
+  svg.append("path")
+    .datum(departures)
+    .attr("d", line)
+    .attr("class", "line");
 }
 
 function setYDomain(y, data, options) {
