@@ -15,7 +15,7 @@ var svg = d3.select("svg")
 
 load_data(2000, 2019, function() {
   console.log("Data ready for chart");
-  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", sortBy: "combined"});
+  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
 });
 
 function drawClubBarchartClub(svg, width, height, options) {
@@ -28,24 +28,26 @@ function drawClubBarchartClub(svg, width, height, options) {
   }
   var all_transfers = arrivals.concat(departures);
 
-  // Aggregate the data per club
+  // Aggregate the data per club/league
   var clubData = {};
   all_transfers.forEach(function (val) {
-    if (val.to_club_name !== undefined) {
-      if (val.to_club_name in clubData) {
-        clubData[val.to_club_name].to.amount += 1;
-        clubData[val.to_club_name].to.value += getPlayerValue(val.transfer_fee);
-        clubData[val.to_club_name].to.transfers.push(val);
+    var to_name = options.x === "club" ? "to_club_name" : "to_club_league";
+    var from_name = options.x === "club" ? "from_club_name" : "from_club_league";
+    if (val[to_name] !== undefined) {
+      if (val[to_name] in clubData) {
+        clubData[val[to_name]].to.amount += 1;
+        clubData[val[to_name]].to.value += getPlayerValue(val.transfer_fee);
+        clubData[val[to_name]].to.transfers.push(val);
       } else {
-        clubData[val.to_club_name] = {name: val.to_club_name, to: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
+        clubData[val[to_name]] = {name: val[to_name], to: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
       }
     } else {
-      if (val.from_club_name in clubData) {
-        clubData[val.from_club_name].from.amount += 1;
-        clubData[val.from_club_name].from.value += getPlayerValue(val.transfer_fee);
-        clubData[val.from_club_name].from.transfers.push(val);
+      if (val[from_name] in clubData) {
+        clubData[val[from_name]].from.amount += 1;
+        clubData[val[from_name]].from.value += getPlayerValue(val.transfer_fee);
+        clubData[val[from_name]].from.transfers.push(val);
       } else {
-        clubData[val.from_club_name] = {name: val.from_club_name, from: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
+        clubData[val[from_name]] = {name: val[from_name] , from: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
       }
     }
   });
@@ -102,7 +104,7 @@ function drawClubBarchartClub(svg, width, height, options) {
     heightCounter[name].from = 0;
   }
 
-  var bars = svg.selectAll("bar")
+  svg.selectAll("bar")
     .data(sortedData).enter()
     .append("rect")
     // Categorical colors found on https://vega.github.io/vega/docs/schemes/#categorical
