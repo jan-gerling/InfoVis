@@ -88,7 +88,8 @@ function drawClubBarchartClub(svg, width, height, options) {
       .scale(x);
 
   var yAxis = d3.axisLeft()
-      .scale(y);
+      .scale(y)
+      .tickFormat(function(d) { return options.y === "value" ? "£ " + d.toLocaleString() : d; });
 
   // gridlines in x axis function
   function make_x_gridlines() {
@@ -262,13 +263,9 @@ function setYDomain(y, data, options) {
 
 function getSortFunction(options) {
   if (options.y === "value") {
-    return function (e1, e2) {
-      return e2.from.value + e2.to.value - (e1.from.value + e1.to.value);
-    }
+    return getValueSortFunction(options);
   } else {
-    return function (e1, e2) {
-      return e2.from.amount + e2.to.amount - (e1.from.amount + e1.to.amount);
-    }
+    return getAmountSortFunction(options);
   }
 }
 

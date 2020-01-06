@@ -13,16 +13,18 @@ rect {
 }
 
 .line {
-  fill: none;
+  fill: none !important;
   stroke-width: 3;
 }
 
 .in {
   stroke: #1f77b4;
+  fill: #1f77b4;
 }
 
 .out {
   stroke: #ff7f0e;
+  fill: #ff7f0e;
 }
 
 .grid line {

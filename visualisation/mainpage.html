@@ -46,12 +46,20 @@
 				<option>ifk</option>
 			</select>
 
-			<h2 class="bargraph" id="main_graph">Club transfers</h2>
+			<div class="bargraph" id="main_graph">
+				<h2>Club transfers</h2>
+				<p><svg width="20" height="20"><circle cx="10" cy="10" r="5" class="in" /></svg> Incoming
+				<svg width="20" height="20"><circle cx="10" cy="10" r="5" class="out" /></svg> Outgoing </p>
+			</div>
 			<div class="bargraph_svg">
 				<svg id="main_graph_svg"></svg>
 			</div>
 
-			<h2 class="linegraph" id="secondary_graph">Club transfer income/spending per year</h2>
+			<div class="linegraph" id="secondary_graph">
+					<h2>Club transfer income/spending per year</h2>
+					<p><svg width="20" height="20"><circle cx="10" cy="10" r="5" class="in" /></svg> Incoming
+					<svg width="20" height="20"><circle cx="10" cy="10" r="5" class="out" /></svg> Outgoing </p>
+				</div>
 			<div class="linegraph_svg">
 				<svg id="side_graph_svg"></svg>
 			</div>
@@ -91,6 +99,14 @@
 						<option value="amount" selected>Amount of players</option>
 					</select>
 				</div>
+				<div class="sort_by">
+						<b>Sort by:</b>
+						<select id="sort_by_list" onchange="update_page()">
+							<option value="in">Incoming</option>
+							<option value="out">Outgoing</option>
+							<option value="combined" selected>Combined</option>
+						</select>
+					</div>
 			</div>
 		</div>
 		<div id='tinyWindow'>
@@ -171,6 +187,7 @@
 				current_to_year = document.getElementById("to_year_list").value;
 				current_x_view = document.getElementById("x_view_list").value;
 				current_y_view = document.getElementById("y_view_list").value;
+				current_sort_by = document.getElementById("sort_by_list").value;
 				document.getElementById("chosen_club").innerHTML = "Club: ".concat(current_club);
 				document.getElementById("chosen_club_logo").src = club_to_logo_path(current_club);
 				the_league = club_to_league(current_club);
@@ -178,12 +195,12 @@
 				document.getElementById("chosen_league_logo").src = league_to_logo_path(the_league);
 				$("#main_graph_svg").empty();
 				$("#side_graph_svg").empty();
-				main_graph_drawer(current_x_view, current_y_view);
+				main_graph_drawer(current_x_view, current_y_view, current_sort_by);
 			}
-			function main_graph_drawer(x, y) {
+			function main_graph_drawer(x, y, sort) {
 				var svg = d3.select("#main_graph_svg");
 				var svg_side = d3.select("#side_graph_svg");
-				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club: "Everton FC", y: y, x: x, sortBy: "combined"});
+				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club: "Everton FC", y: y, x: x, sortBy: sort});
 				drawLineChart(svg_side, window.innerWidth * 0.75, 600, "Everton FC");
 			}
 			function ten_clubs() {
