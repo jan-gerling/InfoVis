@@ -1,0 +1,170 @@
+body {
+    background-color: #ced0ce;
+    position: relative;
+}
+.everything {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    display: grid;
+    
+    color: black;
+    background-color: #e6e8e6;
+}
+.filler_1 {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 4;
+    background: #0f2e54;
+    width: 60px;
+}
+.filler_2 {
+    grid-column-start: 1;
+    grid-column-end: 7;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    background: #0f2e54;
+    height: 30px;
+}
+.filler_3 {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 1;
+    grid-row-end: 4;
+    background: #0f2e54;
+    width: 60px;
+}
+.filler_4 {
+    grid-column-start: 1;
+    grid-column-end: 7;
+    grid-row-start: 1;
+    grid-row-end: 4;
+    background: #0f2e54;
+}
+.cl_n {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    color: white;
+    font-weight: bold;
+}
+.cl_p {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    background-color: #0f2e54;
+}
+.le_n {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    color: white;
+    font-weight: bold;
+}
+.le_p {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    background-color: #0f2e54;
+}
+.cl_lt {
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    color: white;
+    font-weight: bold;
+}
+.cl_l {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+.cl_s {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+.cl_r {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    color: black;
+}
+.fr_y {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 4;
+    grid-row-end: 5;
+}
+.to_y {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 5;
+    grid-row-end: 6;
+}
+.x_v {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 6;
+    grid-row-end: 7;
+}
+.settings {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 7;
+    grid-row-end: 8;
+    background-color: #ced0ce;
+}
+.bargraph {
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-row-start: 8;
+    grid-row-end: 9;
+}
+.bargraph_svg {
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-row-start: 9;
+    grid-row-end: 10;
+}
+.cl_lab {
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-row-start: 10;
+    grid-row-end: 11;
+}
+.le_lab {
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-row-start: 11;
+    grid-row-end: 12;
+}
+.linegraph {
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 12;
+    grid-row-end: 13;
+}
+.linegraph_svg {
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-row-start: 13;
+    grid-row-end: 14;
+}
+.filler_5 {
+    grid-column-start: 1;
+    grid-column-end: 7;
+    grid-row-start: 15;
+    grid-row-end: 16;
+    background-color: #e6e8e6;
+    height: 30px;
+}
