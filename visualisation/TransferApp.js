@@ -126,7 +126,7 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("transform", "translate(0, " + height + ")");
 
   svg.selectAll(".x-axis .tick")
-    .on("click", function(d) {  console.log(d);});
+    .on("click", function(d) {  club_label_clicked(d);});
 
   // Keeps track of where the seperator lines should come
   var seperatorHeights = [];

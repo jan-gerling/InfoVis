@@ -28,7 +28,7 @@
 				<img id="chosen_league_logo" style="height:60px;">
 			</picture>
 			<p class="cl_lt">Clubs:</p>
-			<input class="cl_s" type="text" id="clubsearch" onkeyup="club_search()" placeholder="Search for clubs..">
+			<input class="cl_s" type="text" id="clubsearch" onkeyup="club_search()" placeholder="Search for clubs...">
 			<ul class="cl_r" id="clubresults">
 				<a id="clubres1" onclick=club_choose(1)></a>
 				<a id="clubres2" onclick=club_choose(2)></a>
@@ -117,17 +117,29 @@
 			var current_x_view;
 			var current_y_view;
 			var current_top_ten;
-			var current_results = ["arsenal", "barcelona", "paris"];
+			var current_results;
 
 			function init() {
-				all_clubs_list = ["arsenal", "barcelona", "paris", "bayern", "ifk"];
-				current_club = "arsenal";
+				all_clubs_list = all_clubs_init();
+				current_club = "FC Barcelona";
 				load_data(2000, 2019, function() {
 					console.log("Data ready for chart");
 					update_page();
 				});
 			}
-
+			function all_clubs_init() {
+				temp_club_list = [];
+				var request = new XMLHttpRequest();
+				request.open("GET", "../data/clubs.json", false);
+				request.send(null);
+				var obj = JSON.parse(request.responseText);
+				for (key in obj) {
+					temp_club_list.push(key);
+				}
+				request.abort;
+				return temp_club_list;
+			}
+			
 			init();
 
 			function club_search() {
@@ -172,7 +184,7 @@
 					update_page();
 				}
 			}
-			function club_label_clicked() {
+			function club_label_clicked(club) {
 				current_club = club;
 				update_page();
 			}
@@ -186,19 +198,46 @@
 				current_y_view = document.getElementById("y_view_list").value;
 				current_sort_by = document.getElementById("sort_by_list").value;
 				document.getElementById("chosen_club").innerHTML = "Club: ".concat(current_club);
-				document.getElementById("chosen_club_logo").src = club_to_logo_path(current_club);
-				the_league = club_to_league(current_club);
-				document.getElementById("league").innerHTML = "League: ".concat(the_league);
-				document.getElementById("chosen_league_logo").src = league_to_logo_path(the_league);
+				
+				other_data = getOtherData(current_club);
+				document.getElementById("chosen_club_logo").src = other_data.club_logo;
+				document.getElementById("league").innerHTML = "League: ".concat(other_data.league_name);
+				document.getElementById("chosen_league_logo").src = other_data.league_logo;
+				// Replaces:
+				//document.getElementById("chosen_club_logo").src = club_to_logo_path(current_club);
+				//the_league = club_to_league(current_club);
+				//document.getElementById("league").innerHTML = "League: ".concat(the_league);
+				//document.getElementById("chosen_league_logo").src = league_to_logo_path(the_league);
+
 				$("#main_graph_svg").empty();
 				$("#side_graph_svg").empty();
-				main_graph_drawer(current_x_view, current_y_view, current_sort_by);
+				main_graph_drawer(current_x_view, current_y_view, current_sort_by, current_club);
 			}
-			function main_graph_drawer(x, y, sort) {
+			function getOtherData(club) {
+				var request = new XMLHttpRequest();
+				request.open("GET", "../data/clubs_transfers2000.json", false);
+				request.send(null);
+				var obj = JSON.parse(request.responseText);
+				
+				for (thing in obj) {
+					for (key in obj[thing]) {
+						if (key == club) {
+							other_data = {
+								club_logo: obj[thing][key].club_image,
+								league_name: obj[thing][key].club_league,
+								league_logo: obj[thing][key].club_league_image
+							}
+							request.abort;
+							return other_data;
+						}
+					}
+				}
+			}
+			function main_graph_drawer(x, y, sort, club) {
 				var svg = d3.select("#main_graph_svg");
 				var svg_side = d3.select("#side_graph_svg");
-				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club: "Everton FC", y: y, x: x, sortBy: sort});
-				drawLineChart(svg_side, window.innerWidth * 0.75, 600, "Everton FC");
+				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club: club, y: y, x: x, sortBy: sort});
+				drawLineChart(svg_side, window.innerWidth * 0.75, 600, club);
 			}
 			function club_to_logo_path(club) {
 				if (club === "arsenal") {return "test1.png";}
