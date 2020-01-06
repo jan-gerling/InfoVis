@@ -38,6 +38,14 @@ function get_club(club){
     return filtered_data;
 }
 
+function get_years(start_year, end_year) {
+    var data = {};
+    for (let year = start_year; year < end_year; year++) {
+        data[year] = transfer_data[year];
+    }
+    return data;
+}
+
 function get_league(league){
     filtered_data = {};
     for(const year in transfer_data){
