@@ -54,7 +54,7 @@ function drawClubBarchartClub(svg, width, height, options) {
   // Sort the clubs by value or amount according to options
   var data = Object.values(clubData);
   data.sort(getSortFunction(options));
-  data.splice(10);
+  data.splice(20);
 
   // Put all the transfers sorted into a single list for d3
   var sortedData = [];
