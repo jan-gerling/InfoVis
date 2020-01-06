@@ -5,6 +5,11 @@
 			Football transfers
 		</title>
 		<link href="mainpage.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="DataModule.js"></script>
+		<script type="text/javascript" src="TransferApp.js"></script>
+		<link rel=stylesheet href=TransferApp.css>
+		<script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		<div class="everything">
@@ -41,40 +46,16 @@
 				<option>ifk</option>
 			</select>
 			
-			<p class="fr_y" id="chosen_from_year">From year:</p>
-			<p class="to_y" id="chosen_to_year">To year:</p>
-			<p class="x_v" id="chosen_x_view">X view:</p>
-			<p class="y_v" id="chosen_y_view">Y view:</p>
-			
-			<p class="bargraph" id="main_graph">This is the main graph for:</p>
-			
-			<div class="cl_lab" id="club_buttons">
-				<u id="jump_1" onclick=jump_to_club(1) style="color:blue;"></u>
-				<u id="jump_2" onclick=jump_to_club(2) style="color:blue;"></u>
-				<u id="jump_3" onclick=jump_to_club(3) style="color:blue;"></u>
-				<u id="jump_4" onclick=jump_to_club(4) style="color:blue;"></u>
-				<u id="jump_5" onclick=jump_to_club(5) style="color:blue;"></u>
-				<u id="jump_6" onclick=jump_to_club(6) style="color:blue;"></u>
-				<u id="jump_7" onclick=jump_to_club(7) style="color:blue;"></u>
-				<u id="jump_8" onclick=jump_to_club(8) style="color:blue;"></u>
-				<u id="jump_9" onclick=jump_to_club(9) style="color:blue;"></u>
-				<u id="jump_10" onclick=jump_to_club(10) style="color:blue;"></u>
-			</div>
-			<div class="le_lab" id="league_names">
-				<b id="league_1">a</b>
-				<b id="league_2">a</b>
-				<b id="league_3">a</b>
-				<b id="league_4">a</b>
-				<b id="league_5">a</b>
-				<b id="league_6">a</b>
-				<b id="league_7">a</b>
-				<b id="league_8">a</b>
-				<b id="league_9">a</b>
-				<b id="league_10">a</b>
+			<p class="bargraph" id="main_graph">Main graph</p>
+			<div class="bargraph_svg">
+				<svg id="main_graph_svg"></svg>
 			</div>
 			
-			<p class="linegraph" id="secondary_graph">This is the secondary graph for:</p>
-			
+			<p class="linegraph" id="secondary_graph">Secondary graph</p>
+			<div class="linegraph_svg">
+				<svg id="side_graph_svg"></svg>
+			</div>
+
 			<div class="settings">
 				<div class="from">
 					<b>From year: </b>
@@ -113,6 +94,12 @@
 					</select>
 				</div>
 			</div>
+		</div>
+		<div id='tinyWindow'>
+			<img id="tinyImage" />
+			<p>Name: <span id="tinyWindow_name"></span></p>
+			<p>Age: <span id="tinyWindow_age"></span></p>
+			<p>Transfer amount: <span id="tinyWindow_value"></span></p>
 		</div>
 
 		<script>
@@ -187,53 +174,16 @@
 				the_league = club_to_league(current_club);
 				document.getElementById("league").innerHTML = "League: ".concat(the_league);
 				document.getElementById("chosen_league_logo").src = league_to_logo_path(the_league);
-				
-				document.getElementById("chosen_from_year").innerHTML = "From year: ".concat(current_from_year);
-				document.getElementById("chosen_to_year").innerHTML = "To year: ".concat(current_to_year);
-				document.getElementById("chosen_x_view").innerHTML = "X view: ".concat(current_x_view);
-				document.getElementById("chosen_y_view").innerHTML = "Y view: ".concat(current_y_view);
 				main_graph_drawer();
-				secondary_graph_drawer();
-				if (current_x_view == "clubs") {
-					current_top_ten = ten_clubs();
-					document.getElementById("league_names").style.display = "none";
-					document.getElementById("club_buttons").style.display = "block";
-					document.getElementById("jump_1").innerHTML = current_top_ten[0];
-					document.getElementById("jump_2").innerHTML = current_top_ten[1];
-					document.getElementById("jump_3").innerHTML = current_top_ten[2];
-					document.getElementById("jump_4").innerHTML = current_top_ten[3];
-					document.getElementById("jump_5").innerHTML = current_top_ten[4];
-					document.getElementById("jump_6").innerHTML = current_top_ten[5];
-					document.getElementById("jump_7").innerHTML = current_top_ten[6];
-					document.getElementById("jump_8").innerHTML = current_top_ten[7];
-					document.getElementById("jump_9").innerHTML = current_top_ten[8];
-					document.getElementById("jump_10").innerHTML = current_top_ten[9];
-				}
-				if (current_x_view == "leagues") {
-					current_top_ten = ten_leagues();
-					document.getElementById("club_buttons").style.display = "none";
-					document.getElementById("league_names").style.display = "block";
-					document.getElementById("league_1").innerHTML = current_top_ten[0];
-					document.getElementById("league_2").innerHTML = current_top_ten[1];
-					document.getElementById("league_3").innerHTML = current_top_ten[2];
-					document.getElementById("league_4").innerHTML = current_top_ten[3];
-					document.getElementById("league_5").innerHTML = current_top_ten[4];
-					document.getElementById("league_6").innerHTML = current_top_ten[5];
-					document.getElementById("league_7").innerHTML = current_top_ten[6];
-					document.getElementById("league_8").innerHTML = current_top_ten[7];
-					document.getElementById("league_9").innerHTML = current_top_ten[8];
-					document.getElementById("league_10").innerHTML = current_top_ten[9];
-				}
 			}
 			function main_graph_drawer() {
-				<!-- new_main_graph = bargraphs.js/their_graph_function(current_club, current_from_year, current_to_year, current_x_view, current_y_view); -->
-				new_main_graph = "This is the main graph for: ".concat(current_club, ", ", current_from_year, "-", current_to_year, ", ", current_x_view, ", ", current_y_view);
-				document.getElementById("main_graph").innerHTML = new_main_graph;
-			}
-			function secondary_graph_drawer() {
-				<!-- new_main_graph = linegraphs.js/their_other_graph_function(current_club, current_y_view); -->
-				new_secondary_graph = "This is the secondary graph for: ".concat(current_club, ", ", current_y_view);
-				document.getElementById("secondary_graph").innerHTML = new_secondary_graph;
+				var svg = d3.select("#main_graph_svg");
+				var svg_side = d3.select("#side_graph_svg");
+				load_data(2000, 2019, function() {
+					console.log("Data ready for chart");
+					drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+					drawLineChart(svg_side, window.innerWidth * 0.75, 600, "Everton FC");
+				});
 			}
 			function ten_clubs() {
 				<!-- the_ten_clubs = bargraphs.js/top_clubs_function(current_club, current_from_year, current_to_year, current_y_view) -->

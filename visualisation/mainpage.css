@@ -129,36 +129,48 @@ body {
     grid-row-start: 8;
     grid-row-end: 9;
 }
-.cl_lab {
+.bargraph_svg {
     grid-column-start: 2;
     grid-column-end: 7;
     grid-row-start: 9;
     grid-row-end: 10;
 }
-.le_lab {
+.cl_lab {
     grid-column-start: 2;
     grid-column-end: 7;
     grid-row-start: 10;
     grid-row-end: 11;
 }
-.linegraph {
+.le_lab {
     grid-column-start: 2;
-    grid-column-end: 5;
-    grid-row-start: 11;
-    grid-row-end: 12;
-}
-.settings {
-    grid-column-start: 5;
     grid-column-end: 7;
     grid-row-start: 11;
     grid-row-end: 12;
+}
+.linegraph {
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 12;
+    grid-row-end: 13;
+}
+.linegraph_svg {
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-row-start: 13;
+    grid-row-end: 14;
+}
+.settings {
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 14;
+    grid-row-end: 15;
     background-color: #ced0ce;
 }
 .filler_5 {
     grid-column-start: 1;
     grid-column-end: 8;
-    grid-row-start: 12;
-    grid-row-end: 13;
+    grid-row-start: 15;
+    grid-row-end: 16;
     background-color: #e6e8e6;
     height: 30px;
 }

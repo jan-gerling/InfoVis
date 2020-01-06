@@ -8,7 +8,11 @@
 	</head>
 	<body>
 		<div id="vis">
-			<svg></svg>
+			<svg id="main_graph_svg"></svg>
+		</div>
+
+		<div>
+			<svg id="side_graph_svg"></svg>
 		</div>
 
 		<div id='tinyWindow'>
@@ -20,6 +24,15 @@
 		<script type="text/javascript" src="data.js"></script>
 		<script type="text/javascript" src="DataModule.js"></script>
 		<script type="text/javascript" src="TransferApp.js"></script>
+		<script>
+			var svg = d3.select("#main_graph_svg");
+			var svg_side = d3.select("#side_graph_svg");
+			load_data(2000, 2019, function() {
+				console.log("Data ready for chart");
+				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+				drawLineChart(svg_side, window.innerWidth * 0.75, 600, "Everton FC");
+			});
+		</script>
 	</body>
 </html>
 

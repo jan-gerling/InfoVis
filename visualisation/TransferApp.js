@@ -1,23 +1,28 @@
-var viewWidth = window.innerWidth;
-var viewHeight = window.innerHeight;
+// var viewWidth = window.innerWidth;
+// var viewHeight = window.innerHeight;
 
-var margin = {top: 20, right: 20, bottom: 30, left: 80};
-var width = viewWidth - margin.left - margin.right;
-var height = viewHeight - margin.top - margin.bottom;
+// var margin = {top: 20, right: 20, bottom: 30, left: 80};
+// var width = viewWidth - margin.left - margin.right;
+// var height = viewHeight - margin.top - margin.bottom;
 
-var svg = d3.select("svg")
-    .attr("width", width)
+// var svg = d3.select("svg")
+//    .attr("width", width)
+//     .attr("height", height + 50)
+//     .append("g")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// load_data(2000, 2019, function() {
+//   console.log("Data ready for chart");
+//   // drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+//   drawLineChart(svg, width, height, "Everton FC");
+// });
+
+function drawClubBarchartClub(svg, width, height, options) {
+  var margin = {top: 20, right: 20, bottom: 30, left: 80};
+  var svg = svg.attr("width", width)
     .attr("height", height + 50)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-load_data(2000, 2019, function() {
-  console.log("Data ready for chart");
-  // drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
-  drawLineChart(svg, width, height, "Everton FC");
-});
-
-function drawClubBarchartClub(svg, width, height, options) {
   var new_data = get_club(options.club);
   var arrivals = [];
   var departures = [];
@@ -157,6 +162,11 @@ function drawClubBarchartClub(svg, width, height, options) {
 }
 
 function drawLineChart(svg, width, height, club) {
+  var margin = {top: 20, right: 20, bottom: 30, left: 80};
+  var svg = svg.attr("width", width)
+    .attr("height", height + 50)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   var new_data = get_club(club);
   var arrivals = [];
   var departures = [];
