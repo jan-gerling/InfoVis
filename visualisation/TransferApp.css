@@ -4,6 +4,14 @@ body {
   padding: 0;
 }
 
+.x-axis .tick:hover {
+  cursor: pointer;
+}
+
+rect {
+  cursor: pointer;
+}
+
 .axis path, .axis line {
   fill: none;
   stroke: #000;

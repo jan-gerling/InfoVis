@@ -73,7 +73,7 @@ function drawClubBarchartClub(svg, width, height, options) {
     });
   });
 
-  var x = d3.scaleBand().range([0, width]);
+  var x = d3.scaleBand().range([0, width - margin.left]);
   var y = d3.scaleLinear().range([height, 0]);
 
   x.domain(data.map(function(d) { return d.name; }));
@@ -115,8 +115,13 @@ function drawClubBarchartClub(svg, width, height, options) {
   svg.append("g")
     .call(yAxis);
   svg.append("g")
+    .attr("class", "x-axis")
     .call(xAxis)
     .attr("transform", "translate(0, " + height + ")");
+    
+  svg.selectAll(".x-axis .tick")
+    .on("click", function(d) {  console.log(d);})
+  ;
 
   // Keeps track of where the seperator lines should come
   var seperatorHeights = [];
