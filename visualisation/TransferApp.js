@@ -7,14 +7,14 @@ var height = viewHeight - margin.top - margin.bottom;
 
 var svg = d3.select("svg")
     .attr("width", width)
-    .attr("height", height + 500)
+    .attr("height", height + 50)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 load_data(2000, 2019, function() {
   console.log("Data ready for chart");
-  drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
-  // drawLineChart(svg, width, height, "Everton FC");
+  // drawClubBarchartClub(svg, width, height, {club: "Everton FC", y: "value", x: "league", sortBy: "combined"});
+  drawLineChart(svg, width, height, "Everton FC");
 });
 
 function drawClubBarchartClub(svg, width, height, options) {
@@ -120,8 +120,7 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("transform", "translate(0, " + height + ")");
     
   svg.selectAll(".x-axis .tick")
-    .on("click", function(d) {  console.log(d);})
-  ;
+    .on("click", function(d) {  console.log(d);});
 
   // Keeps track of where the seperator lines should come
   var seperatorHeights = [];
@@ -177,7 +176,7 @@ function drawLineChart(svg, width, height, club) {
     });
   }
   
-  var x = d3.scaleBand().range([0, width]);
+  var x = d3.scaleBand().range([0, width - margin.left]);
   var y = d3.scaleLinear().range([height, 0]);
 
   x.domain(arrivals.map(function(d) { return d.season; }));
@@ -222,7 +221,11 @@ function drawLineChart(svg, width, height, club) {
     .call(yAxis);
   svg.append("g")
     .call(xAxis)
+    .attr("class", "x-axis")
     .attr("transform", "translate(0, " + height + ")");
+
+  svg.selectAll(".x-axis .tick")
+    .on("click", function(d) {  console.log(d);});
   
   var line = d3.line()
     .x(function(d) { return x(d.season) + 0.5 * x.bandwidth(); })
@@ -231,12 +234,12 @@ function drawLineChart(svg, width, height, club) {
   svg.append("path")
     .datum(arrivals)
     .attr("d", line)
-    .attr("class", "line");
+    .attr("class", "line in");
 
   svg.append("path")
     .datum(departures)
     .attr("d", line)
-    .attr("class", "line");
+    .attr("class", "line out");
 }
 
 function setYDomain(y, data, options) {
