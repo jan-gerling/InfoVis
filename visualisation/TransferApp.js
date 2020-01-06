@@ -141,7 +141,8 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("height", getBarHeight(y, height, options))
     .on("mouseenter", handleMouseEnter)
     .on("mouseleave", handleMouseLeave)
-    .on("mousemove", handleMouseMove);
+    .on("mousemove", handleMouseMove)
+    .on("click", handleMouseClick);
 
   svg.selectAll("bar").data(seperatorHeights).enter().append("line")
     .style("stroke", "black")  // colour the line
@@ -334,6 +335,10 @@ function handleMouseEnter(transfer) {
   tinyAge.innerHTML = transfer.player_age;
   tinyAmount.innerHTML = transfer.transfer_fee;
   tiny.style.display = "block";
+}
+
+function handleMouseClick(transfer) {
+  window.open("https://www.transfermarkt.com" + transfer.transfer_href);
 }
 
 function handleMouseLeave() {
