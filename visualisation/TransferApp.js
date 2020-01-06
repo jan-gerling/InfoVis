@@ -91,18 +91,18 @@ function drawClubBarchartClub(svg, width, height, options) {
       .scale(y);
 
   // gridlines in x axis function
-  function make_x_gridlines() {		
+  function make_x_gridlines() {
     return d3.axisBottom(x)
         .ticks(5)
   }
 
   // gridlines in y axis function
-  function make_y_gridlines() {		
+  function make_y_gridlines() {
     return d3.axisLeft(y)
         .ticks(5)
   }
 
-  svg.append("g")			
+  svg.append("g")
       .attr("class", "grid")
       .attr("transform", "translate(0," + height + ")")
       .call(make_x_gridlines()
@@ -110,7 +110,7 @@ function drawClubBarchartClub(svg, width, height, options) {
           .tickFormat("")
       );
 
-  svg.append("g")			
+  svg.append("g")
       .attr("class", "grid")
       .call(make_y_gridlines()
           .tickSize(-width)
@@ -123,7 +123,7 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("class", "x-axis")
     .call(xAxis)
     .attr("transform", "translate(0, " + height + ")");
-    
+
   svg.selectAll(".x-axis .tick")
     .on("click", function(d) {  console.log(d);});
 
@@ -185,7 +185,7 @@ function drawLineChart(svg, width, height, club) {
       departures[i].amount += 1;
     });
   }
-  
+
   var x = d3.scaleBand().range([0, width - margin.left]);
   var y = d3.scaleLinear().range([height, 0]);
 
@@ -195,18 +195,18 @@ function drawLineChart(svg, width, height, club) {
   y.domain([0, Math.max(max_arrival, max_departures)]);
 
   // gridlines in x axis function
-  function make_x_gridlines() {		
+  function make_x_gridlines() {
     return d3.axisBottom(x)
         .ticks(5);
   }
 
   // gridlines in y axis function
-  function make_y_gridlines() {		
+  function make_y_gridlines() {
     return d3.axisLeft(y)
         .ticks(10);
   }
 
-  svg.append("g")			
+  svg.append("g")
       .attr("class", "grid")
       .attr("transform", "translate(0," + height + ")")
       .call(make_x_gridlines()
@@ -214,7 +214,7 @@ function drawLineChart(svg, width, height, club) {
           .tickFormat("")
       );
 
-  svg.append("g")			
+  svg.append("g")
       .attr("class", "grid")
       .call(make_y_gridlines()
           .tickSize(-width)
@@ -236,7 +236,7 @@ function drawLineChart(svg, width, height, club) {
 
   svg.selectAll(".x-axis .tick")
     .on("click", function(d) {  console.log(d);});
-  
+
   var line = d3.line()
     .x(function(d) { return x(d.season) + 0.5 * x.bandwidth(); })
     .y(function(d) { return y(d.value); })
@@ -348,10 +348,14 @@ function handleMouseEnter(transfer) {
   var tinyAge = document.getElementById("tinyWindow_age");
   var tinyAmount = document.getElementById("tinyWindow_value");
   var tinyImage = document.getElementById("tinyImage");
+  var tinySeason = document.getElementById("tinyWindow_season");
   tinyImage.src = transfer.player_image;
   tinyName.innerHTML = transfer.player_name;
   tinyAge.innerHTML = transfer.player_age;
   tinyAmount.innerHTML = transfer.transfer_fee;
+  var href = transfer.from_club_href !== undefined ? transfer.from_club_href : transfer.to_club_href;
+  var href_list = href.split("/");
+  tinySeason.innerHTML =  href_list[href_list.length - 1];
   tiny.style.display = "block";
 }
 

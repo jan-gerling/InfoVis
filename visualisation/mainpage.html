@@ -18,7 +18,7 @@
 			<div class="filler_3"></div>
 			<div class="filler_4"></div>
 			<div class="filler_5"></div>
-			
+
 			<p class="cl_n" id="chosen_club">Club:</p>
 			<picture class="cl_p">
 				<img id="chosen_club_logo" style="height:60px;">
@@ -45,13 +45,13 @@
 				<option>bayern</option>
 				<option>ifk</option>
 			</select>
-			
-			<p class="bargraph" id="main_graph">Main graph</p>
+
+			<h2 class="bargraph" id="main_graph">Club transfers</h2>
 			<div class="bargraph_svg">
 				<svg id="main_graph_svg"></svg>
 			</div>
-			
-			<p class="linegraph" id="secondary_graph">Secondary graph</p>
+
+			<h2 class="linegraph" id="secondary_graph">Club transfer income/spending per year</h2>
 			<div class="linegraph_svg">
 				<svg id="side_graph_svg"></svg>
 			</div>
@@ -88,9 +88,9 @@
 					<b>Y view: </b>
 					<select id="y_view_list" onclick="update_page()">
 						<option>number of players</option>
-						<option selected>purchases amount (€)</option>
-						<option>sales amount (€)</option>
-						<option>total amount (€)</option>
+						<option selected>purchases value (€)</option>
+						<option>sales value (€)</option>
+						<option>total value (€)</option>
 					</select>
 				</div>
 			</div>
@@ -99,7 +99,8 @@
 			<img id="tinyImage" />
 			<p>Name: <span id="tinyWindow_name"></span></p>
 			<p>Age: <span id="tinyWindow_age"></span></p>
-			<p>Transfer amount: <span id="tinyWindow_value"></span></p>
+			<p>Transfer value: <span id="tinyWindow_value"></span></p>
+			<p>Season: <span id="tinyWindow_season"></span></p>
 		</div>
 
 		<script>
