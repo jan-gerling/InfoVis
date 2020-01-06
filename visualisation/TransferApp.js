@@ -62,11 +62,16 @@ function drawClubBarchartClub(svg, width, height, options) {
   var x = d3.scaleBand().range([0, width - margin.left]).padding(.15);
   var y = d3.scaleLinear().range([height, 0]);
 
-  x.domain(data.map(function(d) { return d.name; }));
+  var nameHrefMap = {};
+  x.domain(data.map(function(d) {
+    console.log(d);
+    return d.name;
+  }));
   setYDomain(y, data, options);
 
   var xAxis = d3.axisBottom()
-      .scale(x);
+      .scale(x)
+      .tickFormat(function(d) {return d});
 
   var yAxis = d3.axisLeft()
       .scale(y)

@@ -28,13 +28,12 @@ function get_club(club){
     for(var year in transfer_data){
         var yearTransfers = transfer_data[parseInt(year)];
         for (var cl in yearTransfers) {
-            var t = yearTransfers[cl];
-            if (t[club] !== undefined) {
-                filtered_data[parseInt(year)] = t[club];
+            var c = Object.values(yearTransfers[cl])[0];
+            if (c.href.split("/")[3] === club.split("/")[3]) {
+                filtered_data[parseInt(year)] = c;
             }
         }
     }
-
     return filtered_data;
 }
 
