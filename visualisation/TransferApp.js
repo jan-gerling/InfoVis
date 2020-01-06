@@ -78,7 +78,7 @@ function drawClubBarchartClub(svg, width, height, options) {
     });
   });
 
-  var x = d3.scaleBand().range([0, width - margin.left]);
+  var x = d3.scaleBand().range([0, width - margin.left]).padding(.15);
   var y = d3.scaleLinear().range([height, 0]);
 
   x.domain(data.map(function(d) { return d.name; }));
@@ -373,7 +373,7 @@ function handleMouseMove() {
   var e = window.event;
   var x = e.clientX,
     y = e.clientY;
-  tiny.style.top = (y + 20) + 'px';
+  tiny.style.top = (y + 20) + (window.pageYOffset || document.documentElement.scrollTop) + 'px';
   tiny.style.left = (x + 20) + 'px';
 }
 

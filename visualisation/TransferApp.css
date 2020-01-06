@@ -57,8 +57,13 @@ select {
 #tinyWindow {
   position: absolute;
   width: 150px;
+  padding: 10px;
   background-color: lightgray;
   display: none;
+}
+
+#tinyImageContainer {
+  border-bottom: 2px solid black;
 }
 
 #tinyWindow p {
@@ -66,6 +71,7 @@ select {
 }
 
 #tinyImage {
-  height: 150px;
-  width: 150px;
+  height: 100px;
+  width: 100px;
+  margin: 25px;
 }

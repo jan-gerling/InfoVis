@@ -117,12 +117,6 @@ body {
     grid-row-start: 6;
     grid-row-end: 7;
 }
-.y_v {
-    grid-column-start: 2;
-    grid-column-end: 4;
-    grid-row-start: 7;
-    grid-row-end: 8;
-}
 .settings {
     grid-column-start: 2;
     grid-column-end: 3;
