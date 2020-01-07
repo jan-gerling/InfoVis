@@ -118,10 +118,11 @@
 			var current_y_view;
 			var current_top_ten;
 			var current_results;
+			var hrefToName = {};
 
 			function init() {
 				all_clubs_list = all_clubs_init();
-				current_club = "/queens-park-rangers/transfers/verein/1039";
+				current_club = "/queens-park-rangers/spielplan/verein/1039/";
 				current_start_year = 2000;
 				current_end_year = 2019;
 				load_data(2000, 2019, function() {
@@ -136,10 +137,18 @@
 				request.send(null);
 				var obj = JSON.parse(request.responseText);
 				for (key in obj) {
-					temp_club_list.push(obj[key]);
+					temp_club_list.push(key);
+					hrefToName[obj[key]] = key;
 				}
 				request.abort;
 				return temp_club_list;
+			}
+			function getClubRef(club) {
+				var request = new XMLHttpRequest();
+				request.open("GET", "../data/clubs.json", false);
+				request.send(null);
+				var obj = JSON.parse(request.responseText);
+				return obj[club];
 			}
 			init();
 
@@ -175,7 +184,7 @@
 			function club_choose(n) {
 				club = current_results[n-1];
 				document.getElementById("clubresults").style.display = "none";
-				current_club = club;
+				current_club = getClubRef(club);
 				update_page();
 			}
 			function jump_to_club(num) {
@@ -206,7 +215,7 @@
 				current_x_view = document.getElementById("x_view_list").value;
 				current_y_view = document.getElementById("y_view_list").value;
 				current_sort_by = document.getElementById("sort_by_list").value;
-				document.getElementById("chosen_club").innerHTML = "Club: ".concat(current_club);
+				document.getElementById("chosen_club").innerHTML = "Club: ".concat(hrefToName[current_club]);
 
 				other_data = getOtherData(current_club);
 				document.getElementById("chosen_club_logo").src = other_data.club_logo;
