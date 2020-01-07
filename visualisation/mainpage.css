@@ -139,7 +139,7 @@ body {
 }
 .bargraph_svg {
     grid-column-start: 2;
-    grid-column-end: 6;
+    grid-column-end: 7;
     grid-row-start: 9;
     grid-row-end: 10;
 }
@@ -163,7 +163,7 @@ body {
 }
 .linegraph_svg {
     grid-column-start: 2;
-    grid-column-end: 6;
+    grid-column-end: 7;
     grid-row-start: 13;
     grid-row-end: 14;
 }
