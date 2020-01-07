@@ -136,12 +136,11 @@
 				request.send(null);
 				var obj = JSON.parse(request.responseText);
 				for (key in obj) {
-					temp_club_list.push(key);
+					temp_club_list.push(obj[key]);
 				}
 				request.abort;
 				return temp_club_list;
 			}
-			
 			init();
 
 			function club_search() {
@@ -208,7 +207,7 @@
 				current_y_view = document.getElementById("y_view_list").value;
 				current_sort_by = document.getElementById("sort_by_list").value;
 				document.getElementById("chosen_club").innerHTML = "Club: ".concat(current_club);
-				
+
 				other_data = getOtherData(current_club);
 				document.getElementById("chosen_club_logo").src = other_data.club_logo;
 				document.getElementById("league").innerHTML = "League: ".concat(other_data.league_name);
@@ -220,13 +219,13 @@
 			}
 			function getOtherData(club) {
 				var request = new XMLHttpRequest();
-				request.open("GET", "../data/clubs_transfers2000.json", false);
+				request.open("GET", "../data/clubs_transfers2019.json", false);
 				request.send(null);
 				var obj = JSON.parse(request.responseText);
-				
+
 				for (thing in obj) {
 					for (key in obj[thing]) {
-						if (key == club) {
+						if (obj[thing][key].href.split("/")[4] === club.split("/")[4]) {
 							other_data = {
 								club_logo: obj[thing][key].club_image,
 								league_name: obj[thing][key].club_league,
