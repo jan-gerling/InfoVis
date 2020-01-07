@@ -40,7 +40,7 @@ function get_club(club, data){
 
 function get_years(start_year, end_year) {
     var data = {};
-    for (let year = start_year; year < end_year; year++) {
+    for (let year = start_year; year <= end_year; year++) {
         data[year] = transfer_data[year];
     }
     return data;

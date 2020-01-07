@@ -251,7 +251,7 @@ function drawLineChart(svg, width, height, club) {
     .attr("transform", "translate(0, " + height + ")");
 
   svg.selectAll(".x-axis .tick")
-    .on("click", function(d) { console.log(d);});
+    .on("click", function(d) { change_current_years(d, d)});
 
   var line = d3.line()
     .x(function(d) { return x(d.season) + 0.5 * x.bandwidth(); })

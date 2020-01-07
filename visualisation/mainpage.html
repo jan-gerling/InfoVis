@@ -122,6 +122,8 @@
 			function init() {
 				all_clubs_list = ["arsenal", "barcelona", "paris", "bayern", "ifk", "/queens-park-rangers/transfers/verein/1039"];
 				current_club = "/queens-park-rangers/transfers/verein/1039";
+				current_start_year = 2000;
+				current_end_year = 2019;
 				load_data(2000, 2019, function() {
 					console.log("Data ready for chart");
 					update_page();
@@ -176,6 +178,15 @@
 				current_club = club;
 				update_page();
 			}
+			function change_current_years(start_year, end_year) {
+				if (start_year !== undefined) {
+					current_start_year = start_year;
+				}
+				if (end_year !== undefined) {
+					current_end_year = end_year;
+				}
+				update_page();
+			}
 			function update_page() {
 				console.log("update page");
 				document.getElementById("clubsearch").value = "";
@@ -192,12 +203,12 @@
 				document.getElementById("chosen_league_logo").src = league_to_logo_path(the_league);
 				$("#main_graph_svg").empty();
 				$("#side_graph_svg").empty();
-				main_graph_drawer(current_x_view, current_y_view, current_sort_by, current_club);
+				main_graph_drawer(current_x_view, current_y_view, current_sort_by, current_club, current_start_year, current_end_year);
 			}
-			function main_graph_drawer(x, y, sort, club) {
+			function main_graph_drawer(x, y, sort, club, start_year, end_year) {
 				var svg = d3.select("#main_graph_svg");
 				var svg_side = d3.select("#side_graph_svg");
-				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club, y: y, x: x, sortBy: sort, start_year: 2000, end_year: 2019});
+				drawClubBarchartClub(svg, window.innerWidth * 0.75, 600, {club, y: y, x: x, sortBy: sort, start_year, end_year});
 				drawLineChart(svg_side, window.innerWidth * 0.75, 600, club);
 			}
 			function club_to_logo_path(club) {
