@@ -4,7 +4,10 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("height", height + 50)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  var new_data = get_club(options.club);
+  var startYear = options.start_year !== undefined ? options.start_year : 2000;
+  var endYear = options.end_year !== undefined ? options.end_year : 2019;
+  var years = get_years(startYear, endYear);
+  var new_data = get_club(options.club, years);
   var arrivals = [];
   var departures = [];
   for (var season in new_data) {
@@ -12,27 +15,32 @@ function drawClubBarchartClub(svg, width, height, options) {
     departures = departures.concat(new_data[season].season_transfers.Departures);
   }
   var all_transfers = arrivals.concat(departures);
+  var hrefToName = {};
 
   // Aggregate the data per club/league
   var clubData = {};
   all_transfers.forEach(function (val) {
-    var to_name = options.x === "club" ? "to_club_name" : "to_club_league";
-    var from_name = options.x === "club" ? "from_club_name" : "from_club_league";
+    var to_name = options.x === "club" ? "to_club_href" : "to_club_league";
+    var from_name = options.x === "club" ? "from_club_href" : "from_club_league";
     if (val[to_name] !== undefined) {
-      if (val[to_name] in clubData) {
-        clubData[val[to_name]].to.amount += 1;
-        clubData[val[to_name]].to.value += getPlayerValue(val.transfer_fee);
-        clubData[val[to_name]].to.transfers.push(val);
+      var name = options.x === "league" ? val[to_name] : val[to_name].split("/").slice(0,5).join("/");
+      if (name in clubData) {
+        clubData[name].to.amount += 1;
+        clubData[name].to.value += getPlayerValue(val.transfer_fee);
+        clubData[name].to.transfers.push(val);
       } else {
-        clubData[val[to_name]] = {name: val[to_name], to: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
+        hrefToName[name] = val.to_club_name;
+        clubData[name] = {name, to: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, from:{amount: 0, value: 0, transfers: []}};
       }
     } else {
-      if (val[from_name] in clubData) {
-        clubData[val[from_name]].from.amount += 1;
-        clubData[val[from_name]].from.value += getPlayerValue(val.transfer_fee);
-        clubData[val[from_name]].from.transfers.push(val);
+      var name = options.x === "league" ? val[from_name] : val[from_name].split("/").slice(0,5).join("/");
+      if (name in clubData) {
+        clubData[name].from.amount += 1;
+        clubData[name].from.value += getPlayerValue(val.transfer_fee);
+        clubData[name].from.transfers.push(val);
       } else {
-        clubData[val[from_name]] = {name: val[from_name] , from: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
+        hrefToName[name] = val.from_club_name;
+        clubData[name] = {name , from: {amount: 1, value: getPlayerValue(val.transfer_fee), transfers: [val]}, to: {amount: 0, value: 0, transfers: []}};
       }
     }
   });
@@ -58,20 +66,19 @@ function drawClubBarchartClub(svg, width, height, options) {
       sortedData.push(t);
     });
   });
-
+  console.log(data);
+  console.log(sortedData);
   var x = d3.scaleBand().range([0, width - margin.left]).padding(.15);
   var y = d3.scaleLinear().range([height, 0]);
 
-  var nameHrefMap = {};
   x.domain(data.map(function(d) {
-    console.log(d);
     return d.name;
   }));
   setYDomain(y, data, options);
 
   var xAxis = d3.axisBottom()
       .scale(x)
-      .tickFormat(function(d) {return d});
+      .tickFormat(function(d) {return options.x === "league" ? d : hrefToName[d];});
 
   var yAxis = d3.axisLeft()
       .scale(y)
@@ -112,15 +119,30 @@ function drawClubBarchartClub(svg, width, height, options) {
     .attr("transform", "translate(0, " + height + ")");
 
   svg.selectAll(".x-axis .tick")
-    .on("click", function(d) {  console.log(d);});
+    .on("click", function(d) {
+      if (options.x === "league") {
+        console.log("Not available for leagues");
+        return;
+      }
+      if (Object.values(get_club(d)).length === 0) {
+        console.log("Club not included in dataset");
+        return;
+      }
+      club_label_clicked(d);
+    });
 
   // Keeps track of where the seperator lines should come
   var seperatorHeights = [];
   // Heightcounter remembers how high the next block of the same club should be placed
   var heightCounter = {};
   for (var i = 0; i < all_transfers.length; i++) {
+    var name;
     var f = all_transfers[i].to_club_name === undefined;
-    var name = f ? all_transfers[i].from_club_name : all_transfers[i].to_club_name;
+    if (options.x === "club") {
+      name = f ? all_transfers[i].from_club_href.split("/").slice(0,5).join("/") : all_transfers[i].to_club_href.split("/").slice(0,5).join("/");
+    } else {
+      name = f ? all_transfers[i].from_club_league : all_transfers[i].to_club_league;
+    }
     heightCounter[name] = {};
     heightCounter[name].to = 0;
     heightCounter[name].from = 0;
@@ -131,7 +153,13 @@ function drawClubBarchartClub(svg, width, height, options) {
     .append("rect")
     // Categorical colors found on https://vega.github.io/vega/docs/schemes/#categorical
     .attr("fill", function(d) { return d.to_club_name === undefined ? "#1f77b4" : "#ff7f0e"; })
-    .attr("x", function(d) { return d.from_club_name === undefined ? x(d.to_club_name) + x.bandwidth() / 2 : x(d.from_club_name); })
+    .attr("x", function(d) {
+      if (options.x === "club") {
+        return d.from_club_name === undefined ? x(d.to_club_href.split("/").slice(0,5).join("/")) + x.bandwidth() / 2 : x(d.from_club_href.split("/").slice(0,5).join("/"));
+      } else {
+        return d.from_club_name === undefined ? x(d.to_club_league) + x.bandwidth() / 2 : x(d.from_club_league);
+      }
+    })
     .attr("width", x.bandwidth()/2)
     .attr("y", getBarY(heightCounter, seperatorHeights, x, y, height, options))
     .attr("height", getBarHeight(y, height, options))
@@ -223,7 +251,7 @@ function drawLineChart(svg, width, height, club) {
     .attr("transform", "translate(0, " + height + ")");
 
   svg.selectAll(".x-axis .tick")
-    .on("click", function(d) {  console.log(d);});
+    .on("click", function(d) { console.log(d);});
 
   var line = d3.line()
     .x(function(d) { return x(d.season) + 0.5 * x.bandwidth(); })
@@ -291,28 +319,46 @@ function getAmountSortFunction(options) {
 function getBarY(heightCounter, seperatorHeights, x, y, height, options) {
   if (options.y === "value") {
     return function(d) {
-      var xSep = d.from_club_name === undefined ? x(d.to_club_name) + x.bandwidth() / 2 : x(d.from_club_name);
-      var f = d.to_club_name === undefined;
-      var res = f ? y(getPlayerValue(d.transfer_fee)) - heightCounter[d.from_club_name].to : y(getPlayerValue(d.transfer_fee)) - heightCounter[d.to_club_name].from;
-      if (!f) {
-        heightCounter[d.to_club_name].from += height - y(getPlayerValue(d.transfer_fee));
+      var name;
+      if (options.x === "club") {
+        name = d.from_club_name === undefined ? d.to_club_href.split("/").slice(0, 5).join("/") : d.from_club_href.split("/").slice(0, 5).join("/");
       } else {
-        heightCounter[d.from_club_name].to += height - y(getPlayerValue(d.transfer_fee));
+        name = d.from_club_name === undefined ? d.to_club_league : d.from_club_league;
       }
-      seperatorHeights.push([xSep, res]);
+      var xVal = d.from_club_name === undefined ? x(name) + x.bandwidth() / 2 : x(name);
+      var f = d.to_club_name === undefined;
+      var res = f ? y(getPlayerValue(d.transfer_fee)) - heightCounter[name].to : y(getPlayerValue(d.transfer_fee)) - heightCounter[name].from;
+      var yVal = y(getPlayerValue(d.transfer_fee));
+      if (!f) {
+        options.x === "club" ? heightCounter[name].from += height - yVal : heightCounter[name].from += height - yVal;
+      } else {
+        options.x === "club" ? heightCounter[name].to += height - yVal : heightCounter[name].to += height - yVal;
+      }
+      seperatorHeights.push([xVal, res]);
       return res;
     }
   } else {
     return function(d) {
-      var xSep = d.from_club_name === undefined ? x(d.to_club_name) + x.bandwidth() / 2 : x(d.from_club_name);
-      var f = d.to_club_name === undefined;
-      var res = f ? y(1) - heightCounter[d.from_club_name].to : y(1) - heightCounter[d.to_club_name].from;
-      if (!f) {
-        heightCounter[d.to_club_name].from += height - y(1);
+      var name;
+      if (options.x === "club") {
+        name = d.from_club_name === undefined ? d.to_club_href.split("/").slice(0, 5).join("/") : d.from_club_href.split("/").slice(0, 5).join("/");
       } else {
-        heightCounter[d.from_club_name].to += height - y(1);
+        name = d.from_club_name === undefined ? d.to_club_league : d.from_club_league;
       }
-      seperatorHeights.push([xSep, res]);
+      var xVal;
+      if (options.x === "club") {
+        xVal = d.from_club_name === undefined ? x(name) + x.bandwidth() / 2 : x(name)
+      } else {
+        xVal = d.from_club_name === undefined ? x(d.to_club_league) + x.bandwidth() / 2 : x(d.from_club_league);
+      }
+      var f = d.to_club_name === undefined;
+      var res = f ? y(1) - heightCounter[name].to : y(1) - heightCounter[name].from;
+      if (!f) {
+        options.x === "club" ? heightCounter[name].from += height - y(1) : heightCounter[d.to_club_league].from += height - y(1);
+      } else {
+        options.x === "club" ? heightCounter[name].to += height - y(1) : heightCounter[d.from_club_league].to += height - y(1);;
+      }
+      seperatorHeights.push([xVal, res]);
       return res;
     }
   }
@@ -373,6 +419,8 @@ function getPlayerValue(val) {
       res = res * 1000;
     } else if (amount === "m") {
       res = res * 1000000;
+    } else {
+      res = res * 1;
     }
   }
   return res;
