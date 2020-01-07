@@ -1,13 +1,40 @@
-body {
-  font: 10px sans-serif;
-  margin: 0;
-  padding: 0;
+.x-axis .tick:hover {
+  cursor: pointer;
+}
+
+rect {
+  cursor: pointer;
 }
 
 .axis path, .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none !important;
+  stroke-width: 3;
+}
+
+.in {
+  stroke: #1f77b4;
+  fill: #1f77b4;
+}
+
+.out {
+  stroke: #ff7f0e;
+  fill: #ff7f0e;
+}
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+
+.grid path {
+  stroke-width: 0;
 }
 
 .dot {
@@ -27,4 +54,26 @@ select {
 
 #selectionUI {
   display: inline-block;
+}
+
+#tinyWindow {
+  position: absolute;
+  width: 150px;
+  padding: 10px;
+  background-color: lightgray;
+  display: none;
+}
+
+#tinyImageContainer {
+  border-bottom: 2px solid black;
+}
+
+#tinyWindow p {
+  font-size: medium;
+}
+
+#tinyImage {
+  height: 100px;
+  width: 100px;
+  margin: 25px;
 }
