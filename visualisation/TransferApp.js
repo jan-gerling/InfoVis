@@ -126,7 +126,9 @@ function drawClubBarchartClub(svg, width, height, options) {
         console.log("Club not included in dataset");
         return;
       }
-      club_label_clicked(d);
+      var dSplit = d.split("/");
+      dSplit[2] = "spielplan";
+      club_label_clicked(dSplit.join("/") + "/");
     });
 
   // Keeps track of where the seperator lines should come
