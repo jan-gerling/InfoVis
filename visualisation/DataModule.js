@@ -9,7 +9,7 @@ function sleep(ms) {
 
 async function load_data(start_year, end_year, _callback){
     var data = {};
-    for (let year = start_year; year < end_year; year++) {
+    for (let year = start_year; year <= end_year; year++) {
         await jQuery.getJSON(data_path.concat(year).concat(".json"), function(json) {
             data[year] = json;
             counter++;
@@ -23,19 +23,27 @@ async function load_data(start_year, end_year, _callback){
     _callback();
 }
 
-function get_club(club){
+function get_club(club, data){
+    var dat = data !== undefined ? data : transfer_data;
     var filtered_data = {};
-    for(var year in transfer_data){
+    for(var year in dat){
         var yearTransfers = transfer_data[parseInt(year)];
         for (var cl in yearTransfers) {
-            var t = yearTransfers[cl];
-            if (t[club] !== undefined) {
-                filtered_data[parseInt(year)] = t[club];
+            var c = Object.values(yearTransfers[cl])[0];
+            if (c.href.split("/")[4] === club.split("/")[4]) {
+                filtered_data[parseInt(year)] = c;
             }
         }
     }
-
     return filtered_data;
+}
+
+function get_years(start_year, end_year) {
+    var data = {};
+    for (let year = start_year; year <= end_year; year++) {
+        data[year] = transfer_data[year];
+    }
+    return data;
 }
 
 function get_league(league){
