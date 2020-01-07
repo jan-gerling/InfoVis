@@ -149,6 +149,7 @@
 			var current_results;
 			var hrefToName = {};
 
+			// Initialize the application
 			function init() {
 				all_clubs_list = all_clubs_init();
 				current_club = "/queens-park-rangers/spielplan/verein/1039/";
@@ -157,6 +158,7 @@
 					update_page();
 				});
 			}
+			// Initialize the list containing all clubs
 			function all_clubs_init() {
 				temp_club_list = [];
 				var request = new XMLHttpRequest();
@@ -165,11 +167,13 @@
 				var obj = JSON.parse(request.responseText);
 				for (key in obj) {
 					temp_club_list.push(key);
+					// Save a reverse object containing the reference as key and the name as value
 					hrefToName[obj[key]] = key;
 				}
 				request.abort;
 				return temp_club_list;
 			}
+			// Get the reference of a club given the name
 			function getClubRef(club) {
 				var request = new XMLHttpRequest();
 				request.open("GET", "../data/clubs.json", false);
@@ -179,6 +183,7 @@
 			}
 			init();
 
+			// Handle the club search bar
 			function club_search() {
 				var input, filter, ul, li, a, i;
 				var a = [];
@@ -208,16 +213,19 @@
 					document.getElementById("clubresults").style.display = "none";
 				}
 			}
+			// Handle the selection of a club from the search bar
 			function club_choose(n) {
 				club = current_results[n-1];
 				document.getElementById("clubresults").style.display = "none";
 				current_club = getClubRef(club);
 				update_page();
 			}
+			// Function called when a club is clicked on the x-axis of a graph
 			function club_label_clicked(club) {
 				current_club = club;
 				update_page();
 			}
+			// Function that changes the active years in the main graph
 			function change_current_years(from_year, to_year) {
 				if (from_year !== undefined) {
 					document.getElementById("from_year_list").value = from_year;
@@ -227,6 +235,7 @@
 				}
 				update_page();
 			}
+			// Update the page
 			function update_page() {
 				console.log("update page");
 				document.getElementById("clubsearch").value = "";
@@ -246,6 +255,7 @@
 				$("#side_graph_svg").empty();
 				main_graph_drawer(current_x_view, current_y_view, current_sort_by, current_club, current_from_year, current_to_year);
 			}
+			// Get the image and league name and image for a club
 			function getOtherData(club) {
 				var request = new XMLHttpRequest();
 				request.open("GET", "../data/clubs_transfers2019.json", false);
@@ -266,6 +276,7 @@
 					}
 				}
 			}
+			// Draw the graphs
 			function main_graph_drawer(x, y, sort, club, start_year, end_year) {
 				var svg = d3.select("#main_graph_svg");
 				var svg_side = d3.select("#side_graph_svg");
@@ -275,19 +286,3 @@
 		</script>
 	</body>
 </html>
-<!--
-What should be displayed by default?
-
-Make it the correct years to choose from
-Make it the correct clubs to choose between
-
-Make the club_to_league function return true answers
-Make the logo functions return true answers
-
-Get the real graphs
-Get the real x-axis top ten values
-
-Design the page
-Align the ten values with the graph correctly
-Show top ten team pictures
- -->
