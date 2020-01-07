@@ -27,7 +27,7 @@
 			<picture class="le_p">
 				<img id="chosen_league_logo" style="height:60px;">
 			</picture>
-			<p class="cl_lt">Clubs:</p>
+			<p class="cl_lt">Club selection:</p>
 			<input class="cl_s" type="text" id="clubsearch" onkeyup="club_search()" placeholder="Search for clubs...">
 			<ul class="cl_r" id="clubresults">
 				<a id="clubres1" onclick=club_choose(1)></a>
@@ -61,11 +61,26 @@
 				<div class="from">
 					<b>From year: </b>
 					<select id="from_year_list" onchange="update_page()">
-						<option>2000</option>
+						<option selected>2000</option>
 						<option>2001</option>
-						<option selected>2002</option>
+						<option>2002</option>
 						<option>2003</option>
 						<option>2004</option>
+						<option>2005</option>
+						<option>2006</option>
+						<option>2007</option>
+						<option>2008</option>
+						<option>2009</option>
+						<option>2010</option>
+						<option>2011</option>
+						<option>2012</option>
+						<option>2013</option>
+						<option>2014</option>
+						<option>2015</option>
+						<option>2016</option>
+						<option>2017</option>
+						<option>2018</option>
+						<option>2019</option>
 					</select>
 				</div>
 				<div class="to">
@@ -73,9 +88,24 @@
 					<select id="to_year_list" onchange="update_page()">
 						<option>2000</option>
 						<option>2001</option>
-						<option selected>2002</option>
+						<option>2002</option>
 						<option>2003</option>
 						<option>2004</option>
+						<option>2005</option>
+						<option>2006</option>
+						<option>2007</option>
+						<option>2008</option>
+						<option>2009</option>
+						<option>2010</option>
+						<option>2011</option>
+						<option>2012</option>
+						<option>2013</option>
+						<option>2014</option>
+						<option>2015</option>
+						<option>2016</option>
+						<option>2017</option>
+						<option>2018</option>
+						<option selected>2019</option>
 					</select>
 				</div>
 				<div class="x">
@@ -116,15 +146,12 @@
 			var current_to_year;
 			var current_x_view;
 			var current_y_view;
-			var current_top_ten;
 			var current_results;
 			var hrefToName = {};
 
 			function init() {
 				all_clubs_list = all_clubs_init();
 				current_club = "/queens-park-rangers/spielplan/verein/1039/";
-				current_start_year = 2000;
-				current_end_year = 2019;
 				load_data(2000, 2019, function() {
 					console.log("Data ready for chart");
 					update_page();
@@ -187,23 +214,16 @@
 				current_club = getClubRef(club);
 				update_page();
 			}
-			function jump_to_club(num) {
-				club = current_top_ten[num-1]
-				if (all_clubs_list.includes(club)) {
-					document.getElementById("club_list").value = club;
-					update_page();
-				}
-			}
 			function club_label_clicked(club) {
 				current_club = club;
 				update_page();
 			}
-			function change_current_years(start_year, end_year) {
-				if (start_year !== undefined) {
-					current_start_year = start_year;
+			function change_current_years(from_year, to_year) {
+				if (from_year !== undefined) {
+					document.getElementById("from_year_list").value = from_year;
 				}
-				if (end_year !== undefined) {
-					current_end_year = end_year;
+				if (to_year !== undefined) {
+					document.getElementById("to_year_list").value = to_year;
 				}
 				update_page();
 			}
@@ -224,7 +244,7 @@
 
 				$("#main_graph_svg").empty();
 				$("#side_graph_svg").empty();
-				main_graph_drawer(current_x_view, current_y_view, current_sort_by, current_club, current_start_year, current_end_year);
+				main_graph_drawer(current_x_view, current_y_view, current_sort_by, current_club, current_from_year, current_to_year);
 			}
 			function getOtherData(club) {
 				var request = new XMLHttpRequest();

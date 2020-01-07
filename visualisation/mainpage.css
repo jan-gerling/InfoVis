@@ -73,31 +73,38 @@ body {
     background-color: #0f2e54;
 }
 .cl_lt {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+.cl_l {
     grid-column-start: 5;
     grid-column-end: 6;
     grid-row-start: 2;
     grid-row-end: 3;
-    color: white;
-    font-weight: bold;
-}
-.cl_l {
-    grid-column-start: 6;
-    grid-column-end: 7;
-    grid-row-start: 2;
-    grid-row-end: 3;
 }
 .cl_s {
-    grid-column-start: 6;
-    grid-column-end: 7;
-    grid-row-start: 2;
-    grid-row-end: 3;
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    height: 30px;
+    vertical-align: middle;
 }
 .cl_r {
-    grid-column-start: 6;
-    grid-column-end: 7;
+    grid-column-start: 5;
+    grid-column-end: 6;
     grid-row-start: 4;
-    grid-row-end: 5;
+    grid-row-end: 9;
     color: black;
+}
+.cl_r a{
+    cursor: pointer;
 }
 .fr_y {
     grid-column-start: 2;
@@ -126,13 +133,13 @@ body {
 }
 .bargraph {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 5;
     grid-row-start: 8;
     grid-row-end: 9;
 }
 .bargraph_svg {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 6;
     grid-row-start: 9;
     grid-row-end: 10;
 }
@@ -156,7 +163,7 @@ body {
 }
 .linegraph_svg {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 6;
     grid-row-start: 13;
     grid-row-end: 14;
 }
