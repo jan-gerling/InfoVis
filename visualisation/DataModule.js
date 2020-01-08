@@ -1,4 +1,4 @@
-var data_path = "/data/clubs_transfers";
+var data_path = "../data/clubs_transfers";
 var transfer_data;
 var counter = 0;
 // var transfer_data = load_data(2000, 2002);
